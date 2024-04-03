@@ -83,7 +83,7 @@ function importDataF() {
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       var title = item.getTitle();
-      if (title !== Pergunta1 && title !== Pergunta2) {
+      if (title !== Pergunta1 && title !== Pergunta2 && title !== Pergunta3) {
         //DadosCoelho' Se o título do item for diferente do título fornecido, remova-o do formulário.
         form.deleteItem(item);
       }
