@@ -54,7 +54,7 @@ function importDataF() {
     }
   
   
-  
+        // Esse grupo de comandos é para excluir perguntas diferentes das perguntas que quero que apareça. 
     var items = form.getItems();
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
