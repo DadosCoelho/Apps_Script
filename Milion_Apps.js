@@ -5,7 +5,7 @@ function importDataF() {
     var formUrl = "https://docs.google.com/forms/d/1YjUp2_CD_1IrtqnBoQWB8Ru2SbUwdoLK1J77Ob5jum4/edit";
     var form = FormApp.openByUrl(formUrl);
   
-  
+    // Essa é a pergunta 1
     var Pergunta1 = spreadsheet.getRange('A1').getValue();
     var range1 = spreadsheet.getRange("A2:A1000");
     var choices1 = range1.getValues().map(function(row) {return row[0]});
@@ -30,7 +30,7 @@ function importDataF() {
     }
   
   
-  
+    // Essa é a pergunta 2
     var Pergunta2 = spreadsheet.getRange('B1').getValue();
     var range2 = spreadsheet.getRange("B2:B1000");
     var choices2 = range2.getValues().map(function(row) {return row[0]});
