@@ -53,6 +53,30 @@ function importDataF() {
       question2.setTitle(Pergunta2);
     }
   
+
+    // Essa é a pergunta 3
+    var Pergunta2 = spreadsheet.getRange('B1').getValue();
+    var range2 = spreadsheet.getRange("B2:B1000");
+    var choices2 = range2.getValues().map(function(row) {return row[0]});
+    // Remover opções duplicadas
+    var uniqueChoices2 = [];
+    choices2.forEach(function(choice) {
+      if (uniqueChoices2.indexOf(choice) === -1) {
+        uniqueChoices2.push(choice);
+      }
+    });
+    var existingQuestion2 = form.getItems(FormApp.ItemType.LIST).filter(function(item) {
+      return item.getTitle() === Pergunta3;
+    });
+    if (existingQuestion2.length > 0) {
+      // Se a pergunta já existir, atualize-a
+      existingQuestion2[0].asListItem().setChoiceValues(uniqueChoices2);
+    } else {
+      // Caso contrário, adicione uma nova pergunta
+      var question2 = form.addListItem();
+      question2.setTitle(Pergunta3);
+    }
+
   
         // Esse grupo de comandos é para excluir perguntas diferentes das perguntas que quero que apareça. 
     var items = form.getItems();
