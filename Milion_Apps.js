@@ -5,7 +5,7 @@ function importDataF() {
     var formUrl = "https://docs.google.com/forms/d/1YjUp2_CD_1IrtqnBoQWB8Ru2SbUwdoLK1J77Ob5jum4/edit";
     var form = FormApp.openByUrl(formUrl);
   
-    // Essa é a pergunta 1
+    //ContaTop' Essa é a pergunta 1
     var Pergunta1 = spreadsheet.getRange('A1').getValue();
     var range1 = spreadsheet.getRange("A2:A1000");
     var choices1 = range1.getValues().map(function(row) {return row[0]});
@@ -30,7 +30,7 @@ function importDataF() {
     }
   
   
-    // Essa é a pergunta 2
+    //ContaTop' Essa é a pergunta 2
     var Pergunta2 = spreadsheet.getRange('B1').getValue();
     var range2 = spreadsheet.getRange("B2:B1000");
     var choices2 = range2.getValues().map(function(row) {return row[0]});
@@ -54,11 +54,11 @@ function importDataF() {
     }
   
 
-    // Essa é a pergunta 3
+    //ContaTop' Essa é a pergunta 3
     var Pergunta3 = spreadsheet.getRange('C1').getValue();
     var range3 = spreadsheet.getRange("C2:C1000");
     var choices3 = range3.getValues().map(function(row) {return row[0]});
-    // Remover opções duplicadas
+    //ContaTop' Remover opções duplicadas
     var uniqueChoices3 = [];
     choices3.forEach(function(choice) {
       if (uniqueChoices3.indexOf(choice) === -1) {
@@ -69,10 +69,10 @@ function importDataF() {
       return item.getTitle() === Pergunta3;
     });
     if (existingQuestion3.length > 0) {
-      // Se a pergunta já existir, atualize-a
+      //ContaTop' Se a pergunta já existir, atualize-a
       existingQuestion3[0].asListItem().setChoiceValues(uniqueChoices3);
     } else {
-      // Caso contrário, adicione uma nova pergunta
+      //ContaTop' Caso contrário, adicione uma nova pergunta
       var question3 = form.addListItem();
       question3.setTitle(Pergunta3);
     }
