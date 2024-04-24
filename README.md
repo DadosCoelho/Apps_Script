@@ -1,0 +1,1 @@
+<h1>Apps Script é uma plataforma de desenvolvimento baseada na nuvem, fornecida pelo Google, que permite criar aplicativos e automações personalizados para produtos do Google, como Planilhas Google, Documentos Google e Gmail, utilizando JavaScript como linguagem de programação.</h1>
