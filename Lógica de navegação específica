@@ -1,0 +1,40 @@
+function addNavigationLogic() {
+  var form = FormApp.openById('19j46tDZdjLPqzeYWubusRPl1srUfb-Jgy1R4p_jos5M'); // Substitua pelo ID do seu formulário
+  
+  // Obter todas as perguntas do formulário (assumindo que a pergunta 5 é a quarta lista suspensa na seção 1)
+  var items = form.getItems(FormApp.ItemType.LIST);
+  
+  // Assumindo que a pergunta desejada é a quarta lista suspensa
+  var listItem = items[2].asListItem(); // O índice é 2 porque começamos a contar do 0
+  
+  // Obter todas as escolhas da lista suspensa
+  var choices = listItem.getChoices();
+  
+  // Adiciona lógica de navegação para cada escolha
+  var newChoices = [];
+  for (var i = 0; i < choices.length; i++) {
+    if (i < 122) {
+      // Enviar formulário para os primeiros 50 itens
+      newChoices.push(listItem.createChoice(choices[i].getValue(), FormApp.PageNavigationType.SUBMIT));
+    } else {
+      // Pular para a seção 2 para os itens restantes
+      newChoices.push(listItem.createChoice(choices[i].getValue(), FormApp.PageNavigationType.CONTINUE));
+    }
+  }
+  
+  // Atualiza as escolhas da lista suspensa
+  listItem.setChoices(newChoices);
+}
+
+function setSection2() {
+  var form = FormApp.openById('19j46tDZdjLPqzeYWubusRPl1srUfb-Jgy1R4p_jos5M'); // Substitua pelo ID do seu formulário
+  
+  // Obter a segunda seção (supondo que seja a segunda quebra de página)
+  var section2 = form.getItems(FormApp.ItemType.PAGE_BREAK)[1];
+  
+  // Obter a primeira quebra de página (onde a seção 1 termina)
+  var section1End = form.getItems(FormApp.ItemType.PAGE_BREAK)[0];
+  
+  // Definir a navegação da seção 1 para ir para a seção 2
+  section1End.setGoToPage(section2);
+}
