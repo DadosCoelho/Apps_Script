@@ -1,0 +1,31 @@
+<html>
+  <head>
+        
+    <base target="_top"> 
+            
+    <?!=Chamar("EstiloLinha") ?>  
+     
+  </head>
+  <body>    
+
+  <div id = "CaixaMsg">
+    <div>
+      <div id = "TituloMsg"></div>
+      <div id = "CorpoMsg"></div>
+      <div id = "RodapeMsg"></div>
+    </div>
+  </div>
+
+  <div id="objetos">
+            
+  <label id = "labelLinha">Linha</label>
+  <input id = "Linha" type="text" size = "35" oninput="CaixaAlta(event)">           
+           
+  <button id = "btnSalvar">SALVAR</button>
+              
+  </div>
+         
+  <?!=Chamar("FormLinha-js")?>     
+     
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<html>
+  <head>
+        
+  <base target="_top">
+
+  <?!=Chamar("EstiloFiltroEntrada") ?> 
+
+  </head>
+
+  <body id = "corpo">
+     
+  <div id = "CaixaMsg">
+    <div>
+      <div id = "TituloMsg"></div>
+      <div id = "CorpoMsg"></div>
+      <div id = "RodapeMsg"></div>
+    </div>
+  </div>
+
+  <div id = "divCabecalho">
+
+  <label id ="Labeldata1">Data Inicial</label>
+  <input id = "data1" type="date" onblur = "FiltroDados()"></input>
+
+  <script>
+  var Data = "<?=Data?>";
+  if(Data != ""){
+  document.getElementById("data1").value = new Date(Data).toISOString().substring(0, 10);
+  }
+  </script>
+
+  <label id ="Labeldata2">Data Final</label>
+  <input id = "data2" type="date" onblur = "FiltroDados()"></input>
+
+  <label id = "labelLinha">Linha</label>              
+  <select id = "Linha" class = "browser-default">
+
+      <option value ="<?=Linha?>" disabled selected>Escolha uma linha</option>
+          
+      <? for(var i=0;i<list1.length; i++){?>
+    
+        <option><?=list1[i];?> </option>
+    
+      <?}?>
+
+  </select>
+
+  <label id = "labelMarca">Marca</label>              
+  <select id = "Marca" class = "browser-default">
+
+    <option value ="<?=Marca?>" disabled selected>Escolha uma marca</option>              
+
+  </select>
+    
+  <label id = "labelProduto">Produto</label>
+  <select id = "Produto" class = "browser-default">
+
+    <option value ="<?=Produto?>" disabled selected>Escolha um produto</option>
+
+  </select>
+
+  <label id ="labelNf">NF</label>
+  <input id = "Nf" type="text" value ="<?=Nf?>"></input>
+
+  <label id = "labelCod">Código</label>
+  <input id = "Cod" type="text" value ="<?=Cod?>"></input>
+
+  <button id = "btnFiltrar">FILTRAR</button>
+  <button id = "btnLimpar">LIMPAR</button>
+  <button id = "btnExcel">EXCEL</button>
+  <button id = "btnPdf">PDF</button> 
+
+  </div>
+
+  <div id = "divTabela">
+
+    <table id = "Tab" width = "100%" border = "1" cellpadding = "1px">
+    
+      <thead>
+        <tr>            
+          <th>ID</th>
+          <th width="7%">DATA</th>
+          <th>LINHA</th>
+          <th>MARCA</th>
+          <th>PRODUTO</th>
+          <th width="5%">CÓDIGO</th>
+          <th>QTD</th>
+          <th width="6%">NF</th>
+          <th>OBSERVAÇÃO</th>            
+        </tr>
+      </thead> 
+
+    <tbody id = "CorpoTabela">
+    
+    </tbody>
+    
+  </table>
+  
+  </div> 
+          
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<?!=Chamar("FiltroEntrada-js")?>     
+
+  </body>
+</html>

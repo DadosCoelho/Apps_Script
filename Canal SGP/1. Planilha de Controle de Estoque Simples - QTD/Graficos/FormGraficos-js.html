@@ -1,0 +1,272 @@
+<script>
+
+    var CampoLinha = document.getElementById("Linha");
+    var CampoMarca = document.getElementById("Marca");
+    var CampoProduto = document.getElementById("Produto");
+    var CampoAno = document.getElementById("Ano");
+    var CampoMes = document.getElementById("Mes");
+    
+    function LimparLista(Campo,Opt){
+    
+          while (Campo.length){
+            Campo.remove(0); 
+          }
+    
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(Opt);   
+          NovaOpcao.appendChild(Texto);   
+          Campo.insertBefore(NovaOpcao, Campo.lastChild);  
+    
+          Campo.options[0].disabled = true;
+    
+    }
+    
+    CampoLinha.addEventListener("change", Marca);
+          
+       function Marca(){
+    
+       var Opt = "Escolha uma marca";    
+       LimparLista(CampoMarca,Opt);
+       
+       var linha =  CampoLinha.value;
+       
+       google.script.run.withSuccessHandler(Carregar).Marca(linha);   
+       
+        function Carregar(marcas){
+            
+        if (marcas != "LINHA NÃO ENCONTRADA"){
+        
+            marcas.forEach(function(r){
+            
+                var NovaOpcao = document.createElement("option");
+                var Texto = document.createTextNode(r[0]);   
+                NovaOpcao.appendChild(Texto);   
+                CampoMarca.insertBefore(NovaOpcao, CampoMarca.lastChild);            
+            
+            });
+        
+        }   
+        
+      }
+       
+    }
+       
+    CampoMarca.addEventListener("change", Produtos);
+          
+    function Produtos(){
+       
+       var Opt = "Escolha um produto";    
+       LimparLista(CampoProduto,Opt);
+    
+       var NovaOpcao = document.createElement("option");
+       var Texto = document.createTextNode(" ");   
+       NovaOpcao.appendChild(Texto);   
+       CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);
+    
+       var dados = {
+          Linha: CampoLinha.value,
+          Marca: CampoMarca.value,
+        }
+    
+       google.script.run.withSuccessHandler(Carregar).listaProduto(dados);
+    
+       function Carregar(produtos){
+       
+          if (produtos != "LINHA NÃO ENCONTRADA"){
+          
+              produtos.forEach(function(r){
+              
+                    var NovaOpcao = document.createElement("option");
+                    var Texto = document.createTextNode(r[0]);   
+                    NovaOpcao.appendChild(Texto);   
+                    CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);              
+              
+              });
+          
+          }
+       
+       }
+       
+    }
+       
+       
+    google.load('visualization', '1', {packages: ['corechart'], 'language': 'pt'});
+    
+    google.setOnLoadCallback(Estoque);
+    CampoLinha.addEventListener("input", Estoque);
+    CampoMarca.addEventListener("input", Estoque);
+    CampoProduto.addEventListener("input", Estoque);
+    CampoAno.addEventListener("input", Estoque);
+    CampoMes.addEventListener("input", Estoque);
+        
+    function Estoque() {
+         
+         document.getElementById("Graficocolunas").innerHTML="";
+           
+         var Linha = CampoLinha.value;
+         var Marca = CampoMarca.value;
+         var Produto = CampoProduto.value;
+         var Ano = CampoAno.value;
+         var Mes = CampoMes.value;
+         
+         if(Marca == "Escolha uma marca"){
+            Marca = "";     
+         }
+         
+         if(Produto == "Escolha um produto"){
+            Produto = "";     
+         }     
+     
+         if(Ano == "Escolha um ano"){
+            Ano = "";     
+         }
+      
+         if(Mes == "Escolha um mês"){
+            Mes = "";     
+         }
+        
+         var Dadosfiltro ={
+            Linha: Linha,
+            Marca: Marca,
+            Produto: Produto,
+            Ano: Ano,
+            Mes: Mes,
+         };     
+         
+        google.script.run.withSuccessHandler(DesenharGrafico).Estoque(Dadosfiltro);    
+            
+    }    
+       
+     function DesenharGrafico(Linhas){    
+            
+       var Formatar = {    
+          title:"ESTOQUE",
+          titleTextStyle:{
+            color: '#1a237e',
+            fontSize: 14,
+            bold: true
+          },
+          legend:'none',
+          width:370,   
+          height:420,
+          colors: ['green'],
+          chartArea: {"backgroundColor":"#D3D3D3"}    
+       };
+        
+      var dados = google.visualization.arrayToDataTable(Linhas, false),
+       
+      Grafico = new google.visualization.ColumnChart(document.getElementById("Graficocolunas"));
+        
+      Grafico.draw(dados, Formatar);
+        
+    }
+        
+        
+    google.setOnLoadCallback(EstoqueMes);
+    CampoLinha.addEventListener("input", EstoqueMes);
+    CampoMarca.addEventListener("input", EstoqueMes);
+    CampoProduto.addEventListener("input", EstoqueMes);
+    CampoAno.addEventListener("input", EstoqueMes);
+    CampoMes.addEventListener("input", EstoqueMes);
+    
+    function EstoqueMes() {
+        
+         document.getElementById("Graficolinhas").innerHTML="";
+         
+         var Linha = CampoLinha.value;
+         var Marca = CampoMarca.value;
+         var Produto = CampoProduto.value;
+         var Ano = CampoAno.value;
+         var Mes = CampoMes.value;
+    
+         if(Marca == "Escolha uma marca"){
+            Marca = "";     
+         }
+         
+         if(Produto == "Escolha um produto"){
+            Produto = "";     
+         } 
+         
+         if(Ano == "Escolha um ano"){
+            Ano = "";     
+         }
+         
+         if(Mes == "Escolha um mês"){
+            Mes = "";     
+         }
+    
+         var Dadosfiltro ={
+            Linha: Linha,
+            Marca: Marca,
+            Produto: Produto,
+            Ano: Ano,
+            Mes: Mes,
+         };
+         
+        google.script.run.withSuccessHandler(DesenharGraficoMes).EstoqueMes(Dadosfiltro);
+            
+        }
+           
+      function DesenharGraficoMes(Linhas){    
+                             
+       var Formatar = {
+       
+         title:"ESTOQUE MES",
+         titleTextStyle:{
+            color: '#1a237e',
+            fontSize: 14,
+            bold: true
+          },
+              
+     // legend:'none',
+        width:690,   
+        height:420,
+        
+           hAxis: {
+           // title: 'Meses',          
+              textStyle: {
+                    color: '#01579b',
+                    fontSize: 9,
+                    fontName: 'Arial',
+                    bold: true,
+                    italic: true
+                 },
+                 
+                 titleTextStyle: {
+                    color: '#1a237e',
+                    fontSize: 12,
+                    bold: true
+                 }          
+              
+            },
+      
+            vAxis: {
+              title: "QTD.",          
+              textStyle: {
+                color: '#1a237e',
+                fontSize: 12,
+                bold: true,
+              },
+              titleTextStyle: {
+                color: '#1a237e',
+                fontSize: 14,
+                bold: true,
+              }
+              
+            },        
+      
+    }; 
+            
+      var Dados = google.visualization.arrayToDataTable(Linhas, false),
+                          
+      Grafico = new google.visualization.LineChart(document.getElementById("Graficolinhas"));
+      
+      Grafico.draw(Dados, Formatar);
+         
+    }    
+       
+    </script>
+       
+    
+    
+    

@@ -1,0 +1,337 @@
+<script>
+
+    function sortTable(table, col, reverse) {
+    
+      if (col == 3 || col == 4 || col == 5 ){    
+        return;
+      }  
+    
+      var tb = table.tBodies[0],  
+      tr = Array.prototype.slice.call(tb.rows, 0),
+      i;  
+    
+      reverse = -((+reverse) || -1);
+    
+      tr = tr.sort(function(a, b) {    
+    
+        if (a.cells[col].textContent.trim() != "_" && (a.cells[col].textContent.trim() != "TOTAL")){
+           return reverse * (a.cells[col].textContent.trim()
+          .localeCompare(b.cells[col].textContent.trim()) 
+        );
+    
+        }
+    
+      });
+    
+      for (i = 0; i < tr.length; ++i)  tb.appendChild(tr[i]);
+      
+    }
+    
+    function makeSortable(table) {
+    
+      var th = table.tHead,  
+        i;    
+    
+      th && (th = th.rows[0]) && (th = th.cells);
+    
+      if (th) i = th.length;
+    
+      else return;
+      while (--i >= 0)(function(i) {
+        var dir = 1;
+        th[i].addEventListener('click', function() {
+          sortTable(table, i, (dir = 1 - dir))
+        });
+      }(i));
+    
+    }
+    
+    function makeAllSortable(parent) {
+      
+      parent = parent || document.body;
+      var t = parent.getElementsByTagName('table'),
+        i = t.length;     
+    
+      while (--i >= 0) makeSortable(t[i]);
+    }
+    
+    window.onload = function() {
+      makeAllSortable();
+    };
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    var BtnFechar = '<button onclick= "Fechar()" style = "cursor:pointer" ><b> <font color= "black" size = "5">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+    CaixaMsg.style.display = "block";        
+    
+    TituloMsg.innerHTML = "AVISO"; 
+    CorpoMsg.innerHTML = m;
+    RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";  
+    }
+    
+    var CampoAno = document.getElementById("ListaAno");
+    var CampoMes = document.getElementById("ListaMes");
+    var CampoLinha = document.getElementById("Linha");
+    var CampoMarca = document.getElementById("Marca");
+    var CampoProduto = document.getElementById("Produto");
+    
+    function LimparLista(Campo,Opt){
+    
+          while (Campo.length){
+            Campo.remove(0); 
+          }
+    
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(Opt);   
+          NovaOpcao.appendChild(Texto);   
+          Campo.insertBefore(NovaOpcao, Campo.lastChild);  
+    
+          Campo.options[0].disabled = true;
+    
+    }
+    
+    CampoLinha.addEventListener("change", Marca);
+          
+    function Marca(){
+          
+      var Opt = "Escolha uma marca";    
+      LimparLista(CampoMarca,Opt);
+       
+       var linha =  CampoLinha.value;
+       
+       google.script.run.withSuccessHandler(Carregar).Marca(linha);   
+       
+       function Carregar(marcas){
+          
+          if (marcas != "LINHA NÃO ENCONTRADA"){   
+              
+              marcas.forEach(function(r){ 
+                    
+                    var NovaOpcao = document.createElement("option");
+                    var Texto = document.createTextNode(r[0]);   
+                    NovaOpcao.appendChild(Texto);   
+                    CampoMarca.insertBefore(NovaOpcao, CampoMarca.lastChild);       
+              
+              }); 
+           }   
+       
+       }
+       
+    }
+    
+    CampoMarca.addEventListener("change", Produtos);
+          
+    function Produtos(){ 
+       
+       var Opt = "Escolha um produto";    
+       LimparLista(CampoProduto,Opt);
+       
+       var NovaOpcao = document.createElement("option");
+       var Texto = document.createTextNode(" ");   
+       NovaOpcao.appendChild(Texto);   
+       CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);
+    
+       var dados = {
+          Linha: CampoLinha.value,
+          Marca: CampoMarca.value,
+        }
+    
+       google.script.run.withSuccessHandler(Carregar).listaProduto(dados); 
+       
+       function Carregar(produtos){
+          
+            produtos.forEach(function(r){
+                
+                  var NovaOpcao = document.createElement("option");
+                  var Texto = document.createTextNode(r[0]);              
+                  NovaOpcao.appendChild(Texto);              
+                  CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);       
+            
+            });
+       
+       }
+       
+    }
+    
+    
+    document.addEventListener("DOMContentLoaded", Estoque);
+    CampoAno.addEventListener("change", Estoque);
+    CampoMes.addEventListener("change", Estoque);
+    CampoLinha.addEventListener("change", Estoque);
+    CampoMarca.addEventListener("change", Estoque);
+    CampoProduto.addEventListener("change", Estoque);
+    
+    function Estoque(){
+    
+    var node = document.getElementById("CorpoTabela");
+    
+    while (node.hasChildNodes()) {
+      node.removeChild(node.lastChild);
+    }
+    
+    var Ano = CampoAno.value;
+    var Mes = CampoMes.value;
+    var Linha = CampoLinha.value;
+    var Marca = CampoMarca.value;
+    var Produto = CampoProduto.value;
+    
+    if (Ano == "Escolha um ano"){
+        Ano = "";     
+    }
+    
+    if (Mes == "Escolha um mês"){
+      Mes = "";     
+    }
+    
+    if (Linha == "Escolha uma linha"){
+      Linha = "";     
+    }
+    
+    if (Marca == "Escolha uma marca"){
+      Marca = "";     
+    }
+    
+    if (Produto == "Escolha um produto"){
+      Produto = "";     
+    }
+    
+    var dadosRelatorio ={
+      Ano: Ano,
+      Mes: Mes,
+      Linha: Linha,
+      Marca: Marca,
+      Produto: Produto,
+    };     
+        
+    google.script.run.withSuccessHandler(GerarTabela).Rel2(dadosRelatorio);
+    
+    function GerarTabela(Carregar){
+    
+    if(Carregar == "NÃO EXISTEM DADOS PARA ESTE FILTRO"){
+        var m = Carregar;
+        caixaMsgbox(m);
+        return;
+    }
+    
+    var CorpoTabela = document.getElementById("CorpoTabela");
+    
+    var TE = 0;
+    var TS = 0;
+    var TSL = 0;
+    
+    Carregar.forEach(function(r){
+    
+    var Linha = document.createElement("tr");
+    
+    var Coluna1 = document.createElement("td");
+    Coluna1.textContent = r [0];
+    var Coluna2 = document.createElement("td");
+    Coluna2.textContent = r [1];
+    var Coluna3 = document.createElement("td");
+    Coluna3.textContent = r [2];
+    var Coluna4 = document.createElement("td");
+    Coluna4.textContent = parseFloat(r [3]).toLocaleString("pt-BR",{style: "decimal" , decimal:"BRL"});
+    var Coluna5 = document.createElement("td");
+    Coluna5.textContent = parseFloat(r [4]).toLocaleString("pt-BR",{style: "decimal" , decimal:"BRL"});
+    var Coluna6 = document.createElement("td");
+    Coluna6.textContent = parseFloat(r [5]).toLocaleString("pt-BR",{style: "decimal" , decimal:"BRL"});
+    
+    Linha.appendChild(Coluna1);
+    Linha.appendChild(Coluna2);
+    Linha.appendChild(Coluna3);
+    Linha.appendChild(Coluna4);
+    Linha.appendChild(Coluna5);
+    Linha.appendChild(Coluna6);
+    
+    CorpoTabela.appendChild(Linha);
+    
+    TE = parseFloat(TE) + parseFloat(r[3]);
+    TS = parseFloat(TS) + parseFloat(r[4]); 
+    TSL = parseFloat(TSL) + parseFloat(r[5]);  
+    
+    });
+    
+    var Linha = document.createElement("tr");
+    var Coluna1 = document.createElement("td");
+    Coluna1.textContent = "TOTAL";
+    var Coluna2 = document.createElement("td");
+    Coluna2.textContent = "_";
+    var Coluna3 = document.createElement("td");
+    Coluna3.textContent = "_";
+    var Coluna4 = document.createElement("td");
+    Coluna4.textContent = parseFloat(TE).toLocaleString("pt-BR", { style: "decimal", decimal:"BRL"});
+    var Coluna5 = document.createElement("td");
+    Coluna5.textContent = parseFloat(TS).toLocaleString("pt-BR", { style: "decimal", decimal:"BRL"});
+    var Coluna6 = document.createElement("td");
+    Coluna6.textContent = parseFloat(TSL).toLocaleString("pt-BR", { style: "decimal", decimal:"BRL"});
+    
+    Linha.appendChild(Coluna1);
+    Linha.appendChild(Coluna2);
+    Linha.appendChild(Coluna3);
+    Linha.appendChild(Coluna4);
+    Linha.appendChild(Coluna5);
+    Linha.appendChild(Coluna6);
+    
+    CorpoTabela.appendChild(Linha);
+    
+    }
+    
+    }
+    
+    $(document).ready(function(){
+       
+       $("#btnExcel").click(function(e){
+       e.preventDefault();
+       
+       var DivTabela = document.getElementById('divTabela');
+       var Dados = new Blob(['\ufeff' + DivTabela.outerHTML], {type:'application/vnd.ms-excel'});
+       var url = window.URL.createObjectURL(Dados);
+       
+       var a = document.createElement('a');
+          
+       a.href = url;
+       
+       a.download = "Relatório de estoque";
+       
+        a.click();
+        
+        });
+       
+    });
+    
+    document.getElementById("btnpdf").addEventListener("click", CriaPDF);
+    
+    function CriaPDF() {
+    
+        var minhaTabela = document.getElementById('divTabela').innerHTML;
+    
+        var style = "<style>";
+        style = style + "table {width: 100%;font: 12px Calibri;}";
+        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+        style = style + "padding: 2px 3px;text-align: left;}";
+        style = style + "</style>"; 
+    
+        var win = window.open('', '', 'height=700,width=900');
+        win.document.write('<html><head>');
+        win.document.write('<title>RELATÓRIO</title>'); 
+        win.document.write(style);  
+        win.document.write('</head>');
+        win.document.write('<body>');
+        win.document.write(minhaTabela); 
+        win.document.write('</body></html>');
+        win.document.close(); 
+        win.print();
+    
+    }
+    
+    </script>

@@ -1,0 +1,121 @@
+<html>
+  <head>
+        
+   <base target="_top"> 
+
+   <?!=Chamar("EstiloRelatorio") ?>  
+     
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+      <div>
+        <div id = "TituloMsg"></div>
+        <div id = "CorpoMsg"></div>
+        <div id = "RodapeMsg"></div>
+      </div>
+    </div>
+
+    <div id = "divCabecalho">
+   
+    <label id ="LabelAno">Ano</label>
+    <select id = "ListaAno" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um ano</option>
+      <option></option>
+      <option>2020</option>
+      <option>2021</option>
+      <option>2022</option>  
+      <option>2023</option>
+      <option>2024</option>
+      <option>2025</option>
+      <option>2026</option>  
+      <option>2027</option>
+      <option>2028</option>
+      <option>2029</option>
+      <option>2030</option>  
+      <option>2031</option> 
+
+  </select>
+        
+  <label id ="LabelMes">Mês</label>
+  <select id = "ListaMes" class = "browser-default">
+  
+    <option value = "" disabled selected>Escolha um mês</option>       
+    <option></option>
+    <option>JANEIRO</option>
+    <option>FEVEREIRO</option>
+    <option>MARÇO</option>  
+    <option>ABRIL</option>
+    <option>MAIO</option>
+    <option>JUNHO</option>
+    <option>JULHO</option>  
+    <option>AGOSTO</option>
+    <option>SETEMBRO</option>
+    <option>OUTUBRO</option>
+    <option>NOVEMBRO</option>  
+    <option>DEZEMBRO</option> 
+
+  </select>
+
+  <label id = "labelLinha">Linha</label>              
+  <select id = "Linha" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma linha</option>
+          
+      <? for(var i=0;i<list1.length; i++){?>
+    
+        <option><?=list1[i];?> </option>
+    
+      <?}?>
+
+  </select>
+
+  <label id = "labelMarca">Marca</label>              
+  <select id = "Marca" class = "browser-default">
+
+    <option value = "" disabled selected>Escolha uma marca</option>              
+
+  </select>
+  
+  <label id = "labelProduto">Produto</label>
+  <select id = "Produto" class = "browser-default">
+
+    <option value = "" disabled selected>Escolha um produto</option>
+
+  </select>
+
+  <button id = "btnExcel">EXCEL</button> 
+  <button id = "btnpdf">PDF</button> 
+
+  </div>
+
+   <div id = "divTabela">
+    
+     <table id = "Tab" width = "100%" border = "1px" cellpadding = "1px">   
+     
+      <thead>
+          <tr>            
+            <th>LINHA</th>
+            <th>MARCA</th>
+            <th>PRODUTO</th>
+            <th>ENTRADA</th>
+            <th>SAÍDA</th>
+            <th>SALDO</th>                       
+          </tr>
+        </thead>
+
+      <tbody id = "CorpoTabela">
+     
+      </tbody>
+      
+    </table> 
+
+   </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+         
+    <?!=Chamar("Relatorio-js")?>     
+     
+  </body>
+</html>

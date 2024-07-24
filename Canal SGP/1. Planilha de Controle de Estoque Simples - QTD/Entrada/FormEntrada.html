@@ -1,0 +1,81 @@
+<html>
+  <head>
+        
+    <base target="_top"> 
+   
+    <?!=Chamar("EstiloEntrada") ?>  
+     
+  </head>
+  
+  <body>
+  
+    <div id = "CaixaMsg">
+      <div>
+        <div id = "TituloMsg"></div>
+        <div id = "CorpoMsg"></div>
+        <div id = "RodapeMsg"></div>
+      </div>
+    </div>
+
+    <div id="objetos">      
+      
+      <label id = "labelId">Id</label>
+      <input id="Id" type="text" size = "25" value ="<?=Id?>">
+      
+      <label id = "labelData">Data</label>
+      <input  id="Data" type="date" >
+      <script>
+      document.getElementById("Data").value = new Date().toISOString().substring(0, 10);
+      </script>           
+           
+      <label id = "labelLinha">Linha</label>              
+      <select id = "Linha" class = "browser-default">
+
+        <option value = "" disabled selected>Escolha uma linha</option>
+        
+          <? for(var i=0;i<list.length; i++){?>
+        
+            <option><?=list[i];?> </option>
+        
+          <?}?>
+
+      </select>             
+               
+      <label id = "labelMarca">Marca</label>
+      <select id = "Marca" class = "browser-default">
+
+        <option value = "" disabled selected>Escolha uma marca</option>
+
+      </select>
+                         
+      <label id = "labelProduto">Produto</label>
+      <select id = "Produto" class = "browser-default">
+
+        <option value = "" disabled selected>Escolha um produto</option>
+
+      </select>
+
+      <label id = "labelCod">Cod. Prod.</label>
+      <input id="Cod" type="text" size = "25"style="text-align:center">           
+              
+      <label id = "labelQtd">Qtd.</label>
+      <input id="Qtd" type="text" size = "25" style="text-align:center"> 
+           
+      <label id = "labelNf">NF.</label>
+      <input id="Nf" type="text" size = "25" style="text-align:center" maxlength = "6">
+           
+      <label id = "labelObs">Obs.</label>
+      <input id="Obs" type="text" size = "72" oninput="CaixaAlta(event)">           
+            
+      <button id = "btnlimpar" style="width: 100px; height: 30px">LIMPAR</button>
+      <button id = "btnpesquisar" style="width: 100px; height: 30px">PESQUISAR</button>
+      <button id = "btneditar" style="width: 100px; height: 30px">EDITAR</button>
+      <button id = "btnsalvar" style="width: 100px; height: 30px">SALVAR</button>
+      <button id = "btnexcluir" style="width: 100px; height: 30px" onclick ="Confirm.Executar()">EXCLUIR</button>
+            
+    </div>        
+        
+    <?!=Chamar("FormEntrada-js")?>     
+     
+  </body>
+</html>

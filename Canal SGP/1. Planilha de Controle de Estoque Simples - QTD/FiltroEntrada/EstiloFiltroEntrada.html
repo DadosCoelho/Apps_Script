@@ -1,0 +1,237 @@
+<style>
+
+    #corpo{
+      background-color: #F5F5F5;
+    }
+    
+    #divCabecalho{
+      position: fixed;
+      background-color: #2E8B57;  
+      width: 1100px;
+      height: 100px;
+      top: 0px;
+      left: 0px;
+      z-index: 100;
+    }
+    
+    #Labeldata1{ 
+     position: absolute; 
+     top: 10px;
+     left: 30px;  
+    }
+    
+    #data1{ 
+     position: absolute;
+     text-align: center;
+     left: 5px;
+     top: 30px;
+     width: 120px;
+     height: 21px; 
+    }
+    
+    #Labeldata2{ 
+      position: absolute;  
+      left: 160px;
+      top: 10px; 
+    }
+    
+    #data2{ 
+      position: absolute;
+      text-align: center;
+      width: 120px;
+      height: 21px;
+      left: 135px;
+      top: 30px;  
+    } 
+    
+    #labelLinha{ 
+      position: absolute;  
+      left: 345px;
+      top: 10px; 
+    }
+    
+    #Linha{ 
+      position: absolute;
+      width: 185px;
+      height: 25px;
+      left: 265px;
+      top: 30px;  
+    }
+    
+    #labelMarca{ 
+     position: absolute; 
+     left:525px;
+     top: 10px; 
+    }
+    
+    #Marca{ 
+     position: absolute;
+     left:455px;
+     top: 30px; 
+     width: 200px;
+     height: 25px;
+    }
+    
+    #labelProduto{ 
+     position: absolute; 
+     left:740px;
+     top: 10px; 
+    }
+    
+    #Produto{
+     position: absolute;
+     left:660px;
+     top: 30px; 
+     width: 220px;
+     height: 25px;
+    }
+    
+    #labelNf{ 
+     position: absolute;
+     left:915px;
+     top: 10px; 
+    }
+    
+    #Nf{
+     position: absolute;
+     text-align: center;
+     width: 80px;
+     height: 19px;
+     left: 885px;
+     top: 30px; 
+    }
+    
+    #labelCod{ 
+     position: absolute; 
+     left: 1000px;
+     top: 10px; 
+    }
+    
+    #Cod{
+     position: absolute;
+     text-align: center;
+     left: 980px;
+     top: 30px; 
+     width: 80px;
+     height: 19px;
+    }
+    
+    #btnFiltrar{
+      position: absolute;
+      background-color: #00BFFF;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      left:775px;
+      top: 65px;
+      width: 65px;
+      height: 25px; 
+    }
+    
+    #btnLimpar{
+      position: absolute;
+      background-color: #00FF00;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      left:845px;
+      top: 65px;
+      width: 70px;
+      height: 25px;  
+    }
+    
+    #btnExcel{
+      position: absolute;
+      background-color: #FF4500;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      left:922px;
+      top: 65px;
+      width: 70px;
+      height: 25px; 
+    }
+    
+    #btnPdf{
+      position: absolute;
+      background-color: #FFFF00;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      left:998px;
+      top: 65px;
+      width: 70px;
+      height: 25px;
+    }
+    
+    #Tab{
+      position: absolute;
+      font-size: 13px;
+      left: 0px;
+      top: 100px; 
+      z-index: 0;   
+    }
+    
+    #Tab tr td{
+      cursor: pointer; 
+    }
+    
+    #Tab tr:hover td{
+      background-color: orange;
+    }
+     
+    #Tab tr.selecionado td{
+      background-color: yellow;
+    }
+    
+    #Tab thead {
+      position: sticky; 
+      background-color: #2F4F4F;
+      color: #FFFFFF;
+      top: 100px;  
+    }
+    
+    #Tab tr:last-child { 
+      font-weight: bold;
+      font-size: 15px; 
+    }
+    
+    #CaixaMsg{
+      display: none;
+      position: fixed;
+      background: #000;
+      border-radius: 7px;
+      width: 550px;
+      height: 250px;
+      left:  270px;
+      top: 100px;
+      z-index:1;   
+    }
+       
+    #CaixaMsg > div {
+      background: #FFF; 
+      margin: 6px;
+    }
+    
+    #CaixaMsg > div > #TituloMsg{
+      background: #FFFF00; 
+      font-size: 22px; 
+      padding:10px;
+      color: #000;
+    }
+    
+    #CaixaMsg > div > #CorpoMsg{
+      background: #4169E1; 
+      font-size: 15px; 
+      padding:20px;
+      color: #FFF;
+      text-align:center;
+    }
+    
+    #CaixaMsg > div > #RodapeMsg{
+      background: #4169E1; 
+      padding:10px;
+      text-align:center;
+    } 
+    
+    </style>

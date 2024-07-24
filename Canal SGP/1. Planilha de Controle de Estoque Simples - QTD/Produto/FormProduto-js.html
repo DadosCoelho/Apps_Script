@@ -1,0 +1,113 @@
+<script>
+
+    var CampoLinha = document.getElementById("Linha");
+    var CampoMarca = document.getElementById("Marca");
+    var CampoProduto = document.getElementById("Produto");
+    var BtnSalvar = document.getElementById("btnSalvar");
+      
+    function CaixaAlta(e) {
+        var ss = e.target.selectionStart;
+        var se = e.target.selectionEnd;
+        e.target.value = e.target.value.toUpperCase();
+        e.target.selectionStart = ss;
+        e.target.selectionEnd = se;
+     }
+     
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    var BtnFechar = '<button onclick= "Fechar()" style = "cursor:pointer; background-color:orange" ><b> <font color= "black" size = "5">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";          
+    
+      TituloMsg.innerHTML = "AVISO"; 
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    } 
+    
+    CampoLinha.addEventListener("change", Marca);
+          
+    function Marca(){
+       
+        while (CampoMarca.length){
+          CampoMarca.remove(0); 
+        }   
+            
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode("Escolha uma marca");   
+        NovaOpcao.appendChild(Texto);   
+        CampoMarca.insertBefore(NovaOpcao, CampoMarca.lastChild);   
+        CampoMarca.options[0].disabled = true;
+       
+        var linha =  CampoLinha.value;
+       
+       google.script.run.withSuccessHandler(Carregar).Linhamarca(linha);   
+       
+       function Carregar(marcas){
+          
+          if (marcas != "LINHA NÃO ENCONTRADA"){
+          
+              marcas.forEach(function(r){
+              
+                  var NovaOpcao = document.createElement("option");
+                  var Texto = document.createTextNode(r[0]);   
+                  NovaOpcao.appendChild(Texto);   
+                  CampoMarca.insertBefore(NovaOpcao, CampoMarca.lastChild);       
+              
+              }); 
+              
+           }   
+       
+         }
+       
+       }
+    
+    
+    BtnSalvar.addEventListener("click", SalvarProduto);
+       
+    function SalvarProduto(){
+    
+       BtnSalvar.disabled = true;
+       
+       var Linha = CampoLinha.value;
+       var Marca = CampoMarca.value;
+       var Produto = CampoProduto.value;
+       
+       Produto = Produto.trim();
+    
+       if (Linha == "" || Marca == "" || Produto == ""){   
+          var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+          caixaMsgbox(m);
+          BtnSalvar.disabled = false;
+          return;   
+       } 
+         
+      var Dados ={ 
+        Linha: Linha,
+        Marca: Marca, 
+        Produto: Produto,
+      };   
+       
+     google.script.run.withSuccessHandler(Salvar).SalvarProduto(Dados);
+       
+      function Salvar(r) {
+         
+        var m = r;
+        caixaMsgbox(m);
+        CampoProduto.value = "";
+        BtnSalvar.disabled = false;
+      
+      }
+    
+    }
+       
+    </script>
+    

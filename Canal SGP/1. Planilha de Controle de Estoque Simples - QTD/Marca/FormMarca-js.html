@@ -1,0 +1,73 @@
+<script>
+
+
+    var CampoLinha = document.getElementById("Linha");
+    var CampoMarca = document.getElementById("Marca");
+    var BtnSalvar = document.getElementById("btnSalvar");
+     
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button onclick= "Fechar()" style = "cursor:pointer; background-color:orange" ><b> <font color= "black" size = "5">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO"; 
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function CaixaAlta(e) {
+        var ss = e.target.selectionStart;
+        var se = e.target.selectionEnd;
+        e.target.value = e.target.value.toUpperCase();
+        e.target.selectionStart = ss;
+        e.target.selectionEnd = se;
+     }
+    
+      BtnSalvar.addEventListener("click", Salvarmarca);
+       
+      function Salvarmarca(){
+    
+       BtnSalvar.disabled = true;
+       
+       var Linha = CampoLinha.value;
+       var Marca = CampoMarca.value;
+       
+       Marca = Marca.trim();
+    
+       if (Linha == "" || Marca == ""){
+          var m = "PRECISA PREENCHER TODOS OS CAMPOS!"; 
+          caixaMsgbox(m);
+          BtnSalvar.disabled = false;
+          return false;   
+       } 
+         
+      var Dados ={ 
+        Linha: Linha,
+        Marca: Marca,    
+      };   
+       
+     google.script.run.withSuccessHandler(Salvar).SalvarMarca(Dados);
+       
+      function Salvar(r) { 
+        
+        var m = r;
+        caixaMsgbox(m); 
+        CampoMarca.value = "";
+    
+        BtnSalvar.disabled = false;
+      
+      }
+    
+    }
+      
+    </script>

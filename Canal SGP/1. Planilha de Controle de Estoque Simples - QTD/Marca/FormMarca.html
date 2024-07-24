@@ -1,0 +1,44 @@
+<html>
+  <head>
+        
+    <base target="_top"> 
+              
+    <?!=Chamar("EstiloMarca") ?>  
+     
+  </head>
+  <body>
+
+  <div id = "CaixaMsg">
+    <div>
+      <div id = "TituloMsg"></div>
+      <div id = "CorpoMsg"></div>
+      <div id = "RodapeMsg"></div>
+    </div>
+  </div>
+
+  <div id="objetos">
+
+  <label id = "labelLinha">Linha</label>              
+  <select id = "Linha" class = "browser-default">
+
+    <option value = "" disabled selected>Escolha uma linha</option>
+    
+          <? for(var i=0;i<list.length; i++){?>
+
+            <option><?=list[i];?> </option>
+
+          <?}?>
+  
+    </select>
+             
+    <label id = "labelMarca">Marca</label>
+    <input id="Marca" type="text" size = "35" oninput="CaixaAlta(event)">    
+    
+    <button id = "btnSalvar">SALVAR</button>
+                
+    </div>
+         
+    <?!=Chamar("FormMarca-js")?>     
+     
+  </body>
+</html>

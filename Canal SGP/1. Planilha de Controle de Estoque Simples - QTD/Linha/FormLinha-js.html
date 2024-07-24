@@ -1,0 +1,62 @@
+<script>
+
+    var BtnSalvar = document.getElementById("btnSalvar"); 
+    var CampoLinha = document.getElementById("Linha");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    var BtnFechar = '<button onclick = "Fechar()" style = "cursor:pointer; background-color:orange" ><b> <font color= "black" size = "5">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block"; 
+      TituloMsg.innerHTML = "AVISO"; 
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function CaixaAlta(e) {
+        var ss = e.target.selectionStart;
+        var se = e.target.selectionEnd;
+        e.target.value = e.target.value.toUpperCase();
+        e.target.selectionStart = ss;
+        e.target.selectionEnd = se;
+     }
+    
+    BtnSalvar.addEventListener("click", Salvarlinha);
+       
+    function Salvarlinha(){
+    
+      BtnSalvar.disabled = true;
+       
+      var Linha = CampoLinha.value;
+      
+      Linha = Linha.trim();
+    
+      if (Linha == ""){   
+        var m = "PRECISA PREENCHER CAMPO LINHA!";
+        caixaMsgbox(m);
+        BtnSalvar.disabled = false;
+        return false;
+      }     
+       
+     google.script.run.withSuccessHandler(retorno).SalvarLinha(Linha);
+       
+      function retorno(r) {  
+         
+        var m = r;
+        caixaMsgbox(m);
+        CampoLinha.value = "";
+        BtnSalvar.disabled = false;    
+    
+      }  
+    } 
+      
+    </script>

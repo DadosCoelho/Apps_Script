@@ -1,0 +1,92 @@
+<html>
+  <head>
+        
+  <base target="_top"> 
+            
+  <?!=Chamar("EstiloGraficos") ?>  
+     
+  </head>
+  <body>
+    
+  <div id="objetos">
+            
+  <label id = "labelLinha">Linha</label>              
+  <select id = "Linha" class = "browser-default">
+
+    <option value = "" disabled selected>Escolha uma linha</option>
+    
+        <? for(var i=0;i<list.length; i++){?>
+
+          <option><?=list[i];?> </option>
+
+        <?}?>
+
+   </select>
+             
+    <label id = "labelMarca">Marca</label> 
+    <select id = "Marca" class = "browser-default">
+
+       <option value = "" disabled selected>Escolha uma marca</option>
+
+    </select>
+             
+    <label id = "labelProduto">Produto</label>
+    <select id = "Produto" class = "browser-default">
+
+       <option value = "" disabled selected>Escolha um produto</option>
+
+    </select>
+             
+    <label id ="labelAno">Ano</label>
+    <select id = "Ano" class = "browser-default">
+    
+          <option value = "" disabled selected>Escolha um ano</option>       
+
+              <option></option>
+              <option>2020</option>
+              <option>2021</option>
+              <option>2022</option>  
+              <option>2023</option>
+              <option>2024</option>
+              <option>2025</option>
+              <option>2026</option>  
+              <option>2027</option>
+              <option>2028</option>
+              <option>2029</option>
+              <option>2030</option>  
+              <option>2031</option>
+
+    </select>
+        
+    <label id ="labelMes">Mês</label>
+    <select id = "Mes" class = "browser-default">
+    
+          <option value = "" disabled selected>Escolha um mês</option>
+
+              <option></option>
+              <option>JANEIRO</option>
+              <option>FEVEREIRO</option>
+              <option>MARÇO</option>  
+              <option>ABRIL</option>
+              <option>MAIO</option>
+              <option>JUNHO</option>
+              <option>JULHO</option>  
+              <option>AGOSTO</option>
+              <option>SETEMBRO</option>
+              <option>OUTUBRO</option>
+              <option>NOVEMBRO</option>  
+              <option>DEZEMBRO</option>
+
+    </select>        
+                
+    <div id="Graficocolunas"></div>
+    <div id="Graficolinhas"></div>
+    
+    </div>
+          
+    <?!=Chamar("FormGraficos-js")?>     
+     
+  </body>
+</html>
+
+

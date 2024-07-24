@@ -1,0 +1,52 @@
+<html>
+  <head>
+        
+  <base target="_top"> 
+            
+  <?!=Chamar("EstiloProduto") ?>  
+     
+  </head>
+  <body>
+    
+  <div id = "CaixaMsg">
+    <div>
+      <div id = "TituloMsg"></div>
+      <div id = "CorpoMsg"></div>
+      <div id = "RodapeMsg"></div>
+    </div>
+  </div>
+
+  <div id="objetos">
+             
+  <label id = "labelLinha">Linha</label>              
+  <select id = "Linha" class = "browser-default">
+
+    <option value = "" disabled selected>Escolha uma linha</option>
+    
+          <? for(var i=0;i<list.length; i++){?>
+
+            <option><?=list[i];?> </option>
+
+          <?}?>
+  
+    </select>
+               
+    <label id = "LabelMarca">Marca</label>
+    <select id = "Marca" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma marca</option>
+
+    </select>
+             
+    <label id = "labelProduto">Produto</label>
+    <input id="Produto" type="text" size = "35" oninput="CaixaAlta(event)">
+    
+    <button id = "btnSalvar">SALVAR</button>
+                
+    </div>
+         
+    <?!=Chamar("FormProduto-js")?>     
+     
+  </body>
+</html>
+
