@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloEntrada")?>
+
+  </head>
+  <body> 
+
+    <div id = "CaixaMsg">
+      <div>
+        <div id = "TituloMsg"></div>
+        <div id = "CorpoMsg"></div>
+        <div id = "RodapeMsg"></div>
+      </div>
+    </div> 
+
+    <div id = "divObjetos">
+
+      <label id = "labelId">Id</label>
+      <input id = "Id" type = "text" value = "<?=Id?>">
+
+      <label id = "labelData">Data</label>
+      <input id = "Data" type = "date">
+
+      <script>
+      document.getElementById("Data").value = new Date().toISOString().substring(0, 10);
+      </script>
+
+      <label id = "labelLinha">Linha</label>
+      <select id = "listaLinha" class = "browser-default">
+
+        <option value = "" disabled selected>Escolha uma Linha</option>
+
+        <?for(var i = 0; i < list.length; i++){?>
+
+            <option><?=list[i];?></option>
+
+        <?}?>
+
+      </select>
+
+      <label id = "labelMarca">Marca</label>
+      <select id = "listaMarca" class = "browser-default">
+
+          <option value = "" disabled selected>Escolha uma Marca</option>
+
+      </select>
+
+      <label id = "labelProduto">Produto</label>
+      <select id = "listaProduto" class = "browser-default">
+
+          <option value = "" disabled selected>Escolha um Produto</option>
+
+      </select> 
+
+      <label id = "labelCod">Cod. Prod.</label> 
+      <input id = "Cod" type = "text"> 
+
+      <label id = "labelNf">NF</label> 
+      <input id = "Nf" type = "text" maxlength = "6">
+
+      <label id = "labelValor">Valor</label> 
+      <input id = "Valor" type = "text"> 
+
+      <label id = "labelQtd">Qtd</label> 
+      <input id = "Qtd" type = "text"> 
+
+      <label id = "labelPu">P.U.</label> 
+      <input id = "Pu" type = "text" disabled = "true"> 
+
+      <label id = "labelObs">Obs.</label> 
+      <input id = "Obs" type = "text" oninput = "CaixaAlta(event)"> 
+
+      <button id = "btnLimpar">LIMPAR</button>
+      <button id = "btnPesquisar">PESQUISAR</button>
+      <button id = "btnEditar">EDITAR</button>
+      <button id = "btnSalvar">SALVAR</button>
+      <button id = "btnExcluir">EXCLUIR</button>
+
+    </div>  
+
+    <?!=Chamar("FormEntrada-js")?>
+    
+  </body>
+</html>

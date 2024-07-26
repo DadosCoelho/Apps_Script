@@ -1,0 +1,269 @@
+<style>
+
+    #divObjetos{  
+      background-color: #228B22;
+      border: 1px solid #808080;
+      width: 640px;
+      height: 315px;
+    }
+    
+    #labelId{
+      position: absolute;
+      cursor: pointer;
+      top: 20px;
+      left: 20px;
+    }
+    
+    #Id{
+      position: absolute;
+      text-align: center;
+      width: 215px;
+      height: 17px;
+      top: 20px;
+      left: 80px;
+    }
+    
+    #labelData{
+      position: absolute;
+      top: 20px;
+      left: 320px;
+    }
+    
+    #Data{
+      position: absolute;
+      text-align: center;
+      width: 217px;
+      height: 19px;
+      top: 20px;
+      left: 405px; 
+    }
+    
+    #labelLinha{
+      position: absolute;
+      top: 65px;
+      left: 20px;
+    }
+    
+    #listaLinha{
+      position: absolute;
+      width: 222px;
+      height: 23px;
+      top: 65px;
+      left: 80px;
+    }
+    
+    #labelMarca{
+      position: absolute;
+      top: 65px;
+      left: 320px;
+    }
+    
+    #listaMarca{
+      position: absolute;
+      width: 222px;
+      height: 23px;
+      top: 65px;
+      left: 405px;
+    }
+    
+    #labelProduto{
+      position: absolute;
+      top: 110px;
+      left: 20px;
+    }
+    
+    #listaProduto{
+      position: absolute;
+      width: 222px;
+      height: 23px;
+      top: 110px;
+      left: 80px;
+    }
+    
+    #labelCod{
+      position: absolute;
+      top: 110px;
+      left: 320px;
+    }
+    
+    #Cod{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 110px;
+      left: 405px;
+    }
+    
+    #labelNf{
+      position: absolute;
+      top: 110px;
+      left: 505px;
+    }
+    
+    #Nf{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 110px;
+      left: 540px;  
+    }
+    
+    #labelValor{
+      position: absolute;
+      top: 155px;
+      left: 20px;
+    }
+    
+    #Valor{
+      position: absolute;
+      text-align: center;
+      width: 216px;
+      height: 17px;
+      top: 155px;
+      left: 80px;
+    }
+    
+    #labelQtd{
+      position: absolute;
+      top: 155px;
+      left: 320px;
+    }
+    
+    #Qtd{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 155px;
+      left: 405px;
+    }
+    
+    #labelPu{
+      position: absolute;
+      top: 155px;
+      left: 505px;
+    }
+    
+    #Pu{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 155px;
+      left: 540px;
+    }
+    
+    #labelObs{
+      position: absolute;
+      top: 200px;
+      left: 20px;
+    }
+    
+    #Obs{
+      position: absolute;
+      width: 540px;
+      height: 17px;
+      top: 200px;
+      left: 80px;
+    }
+    
+    #btnLimpar{
+      position: absolute;
+      background-color: #A9A9A9;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 20px;
+    }
+    
+    #btnPesquisar{
+      position: absolute;
+      background-color: #FFFF00;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 145px;
+    }
+    
+    #btnEditar{
+      position: absolute;
+      background-color: #FF4500;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 270px;
+    }
+    
+    #btnSalvar{
+      position: absolute;
+      background-color: #00FF00;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 400px;
+    }
+    
+    #btnExcluir{
+      position: absolute;
+      background-color: #FF0000;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 530px;
+    }
+    
+    #CaixaMsg{
+      display: none;
+      position: fixed;
+      background-color: #000;
+      border-radius: 7px;
+      width: 450px;
+      top: 50px;
+      left: 110px;
+      z-index: 1;
+    }
+    
+    #CaixaMsg > div {
+      background-color: #FFF;
+      margin: 6px;
+    }
+    
+    #CaixaMsg > div > #TituloMsg{
+      background-color: #FFFF00;
+      font-size: 22px;
+      padding: 10px;
+      color: #000;
+    }
+    
+    #CaixaMsg > div > #CorpoMsg{
+      background-color: #4169E1;
+      text-align: center;
+      font-size: 15px;
+      padding: 15px;
+      color: #FFF;
+    }
+    
+    #CaixaMsg > div > #RodapeMsg{
+      background-color: #4169E1;
+      text-align: center;
+      padding: 10px;
+    }
+    
+    </style>    

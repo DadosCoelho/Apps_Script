@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloGraficoValor")?>
+
+  </head>
+  <body id = "corpo">    
+
+    <label id = "labelData1">Data Inic.</label>
+    <input id = "data1" type = "date" onblur = "Filtro()">
+
+    <label id = "labelData2">Data Fin.</label>
+    <input id = "data2" type = "date" onblur = "Filtro()">
+
+    <label id = "labelLinha">Linha</label>
+    <select id = "Linha" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma linha</option>
+
+      <?for(var i = 0; i < list.length; i++){?>
+
+        <option><?=list[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelMarca">Marca</label>
+    <select id = "Marca" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma marca</option>
+
+    </select>
+
+    <label id = "labelProduto">Produto</label>
+    <select id = "Produto" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um produto</option>
+
+    </select>
+
+    <label id = "labelEntrada">Entrada</label>
+    <div id = "divEntrada"></div>
+
+    <label id = "labelSaida">Saída</label>
+    <div id = "divSaida"></div>
+
+    <label id = "labelSaldo">Saldo</label>
+    <div id = "divSaldo"></div>
+
+    <div id = "GraficoColunas"></div>
+    <div id = "GraficoLinhas"></div>
+
+    <?!=Chamar("GraficoValor-js")?>
+
+  </body>
+</html>

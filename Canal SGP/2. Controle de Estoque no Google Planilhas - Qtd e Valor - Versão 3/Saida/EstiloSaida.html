@@ -1,0 +1,300 @@
+<style>
+
+    #divObjetos{
+      background-color: #00FFFF;
+      border: 1px solid #808080;
+      width: 660px;
+      height: 315px;
+    }
+  
+    #labelId{
+      position: absolute;
+      cursor: pointer;
+      top: 23px;
+      left: 20px;
+    }
+  
+    #Id{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 20px;
+      left: 90px;
+    }
+  
+    #labelData{
+      position: absolute;
+      top: 23px;
+      left: 185px;
+    }
+  
+    #Data{
+      position: absolute;
+      text-align: center;
+      width: 100px;
+      height: 20px;
+      top: 20px;
+      left: 220px;
+    }
+  
+    #labelLinha{
+      position: absolute;
+      top: 23px;
+      left: 340px;
+    }
+  
+    #Linha{
+      position: absolute;
+      width: 230px;
+      height: 23px;
+      top: 20px;
+      left: 410px;
+    }
+  
+    #labelMarca{
+      position: absolute;
+      top: 65px;
+      left: 20px;
+    }
+  
+    #Marca{
+      position: absolute;
+      width: 235px;
+      height: 23px;
+      top: 65px;
+      left: 90px;
+    }
+  
+    #labelProduto{
+      position: absolute;
+      top: 65px;
+      left: 340px;
+    }
+  
+    #Produto{
+      position: absolute;
+      width: 230px;
+      height: 23px;
+      top: 65px;
+      left: 410px;
+    }
+  
+    #labelIde{
+      position: absolute;
+      cursor: pointer;
+      top: 112px;
+      left: 20px;
+    }
+  
+    #Ide{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 110px;
+      left: 90px;
+    }
+  
+    #labelPu{
+      position: absolute;
+      top: 112px;
+      left: 185px;
+    }
+  
+    #Pu{
+      position: absolute;
+      text-align: center;
+      width: 100px;
+      height: 17px;
+      top: 110px;
+      left: 220px;
+    }
+  
+    #labelSIde{
+      position: absolute;
+      top: 112px;
+      left: 340px;
+    }
+  
+    #SIde{
+      position: absolute;
+      text-align: center;
+      width: 90px;
+      height: 17px;
+      top: 110px;
+      left: 410px;
+    }
+  
+    #labelSaldo{
+      position: absolute;
+      top: 112px;
+      left: 514px;
+    }
+  
+    #Saldo{
+      position: absolute;
+      text-align: center;
+      width: 89px;
+      height: 17px;
+      top: 110px;
+      left: 545px;
+    }
+  
+    #labelQtd{
+      position: absolute;
+      top: 158px;
+      left: 20px;
+    }
+  
+    #Qtd{
+      position: absolute;
+      text-align: center;
+      width: 80px;
+      height: 17px;
+      top: 155px;
+      left: 90px;
+    }
+  
+    #labelValor{
+      position: absolute;
+      top: 158px;
+      left: 182px;
+    }
+  
+    #Valor{
+      position: absolute;
+      text-align: center;
+      width: 100px;
+      height: 17px;
+      top: 155px;
+      left: 220px;
+    }
+  
+    #labelCod{
+      position: absolute;
+      top: 158px;
+      left: 340px;
+    }
+  
+    #Cod{
+      position: absolute;
+      text-align: center;
+      width: 225px;
+      height: 17px;
+      top: 155px;
+      left: 410px;
+    }
+  
+    #labelObs{
+      position: absolute;
+      top: 200px;
+      left: 20px;
+    }
+  
+    #Obs{
+      position: absolute;
+      width: 546px;
+      height: 17px;
+      top: 200px;
+      left: 90px;      
+    } 
+  
+    #btnLimpar{
+      position: absolute;
+      background-color: #A9A9A9;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 20px;
+    }
+  
+    #btnPesquisar{
+      position: absolute;
+      background-color: #FFFF00;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 155px;
+    }
+  
+    #btnEditar{
+      position: absolute;
+      background-color: #FF4500;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 285px;
+    }
+  
+    #btnSalvar{
+      position: absolute;
+      background-color: #00FF00;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 420px;
+    }
+  
+    #btnExcluir{
+      position: absolute;
+      background-color: #FF0000;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100px;
+      height: 30px;
+      top: 250px;
+      left: 545px;
+    }
+  
+  #CaixaMsg{
+    display: none;
+    position: fixed;
+    background-color: #000;
+    border-radius: 7px;
+    width: 450px;
+    top: 45px;
+    left: 110px;
+    z-index: 1;
+  }
+  
+  #CaixaMsg > div {
+    background-color: #FFF;
+    margin: 6px;
+  }
+  
+  #CaixaMsg > div > #TituloMsg{
+    background-color: #FFFF00;
+    font-size: 22px;
+    padding: 10px;
+    color: #000;
+  }
+  
+  #CaixaMsg > div > #CorpoMsg{
+    background-color: #4169E1;
+    text-align: center;
+    font-size: 15px;
+    padding: 15px;
+    color: #FFF;
+  }
+  
+  #CaixaMsg > div > #RodapeMsg{
+    background-color: #4169E1;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  </style>  
