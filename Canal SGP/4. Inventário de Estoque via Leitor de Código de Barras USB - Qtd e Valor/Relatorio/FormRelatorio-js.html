@@ -1,0 +1,370 @@
+<script>
+
+    var CampoData1 = document.getElementById("data1");
+    var CampoData2 = document.getElementById("data2");
+    var CampoCod = document.getElementById("Cod");
+    var CampoProduto = document.getElementById("Produto");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    document.addEventListener("DOMContentLoaded", IniciarFormulario);
+    
+    var produtos;
+    var contagem;
+    
+    function IniciarFormulario(){
+    
+      google.script.run.withSuccessHandler(Retorno).buscaDadosRel();
+    
+      function Retorno(arrays){    
+        produtos = arrays.dadosProdutos.slice();
+        contagem = arrays.dadosContagem.slice();    
+        Filtro();
+      }
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+    CampoData1.value = "";
+    CampoData2.value = "";
+    CampoCod.value = "";
+    CampoProduto.value = "";
+    
+    LimparTabela(); 
+    
+    }
+    
+    function LimparTabela(){
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      } 
+    
+    }
+    
+    function converteData(Data){
+    
+      var dataQuebrada = Data.split("/");
+      var Dia = dataQuebrada[0];
+      var Mes = dataQuebrada[1];
+      var Ano = dataQuebrada[2];
+      var novaData = new Date(parseInt(Ano, 10), parseInt(Mes, 10) - 1, parseInt(Dia, 10));
+      return novaData;
+    
+    }
+    
+    CampoCod.addEventListener("keyup", function(e){
+      var Tecla = e.which || e.keyCode;
+      if(Tecla == 13){
+        Filtro();
+      }
+    });
+    
+    
+    document.getElementById("btnFiltrar").addEventListener("click", Filtro);
+    CampoProduto.addEventListener("change", Filtro);
+    
+    function Filtro(){
+    
+      LimparTabela();
+    
+      var dataInicial = CampoData1.value;
+    
+      if(dataInicial.length > 0){
+        var dataQuebrada = dataInicial.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataInicial = Dia + "/" + Mes + "/" + Ano;
+      }
+    
+      var dataFinal = CampoData2.value;
+    
+      if(dataFinal.length > 0){
+        var dataQuebrada = dataFinal.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataFinal = Dia + "/" + Mes + "/" + Ano;
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length != 0){
+        var dataInicial = dataFinal;
+      }
+    
+      if(dataInicial.length != 0 && dataFinal.length == 0){
+        var dataFinal = dataInicial;
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length == 0){
+        var dataInicial = "01/01/2020";
+        var dataFinal = "01/01/2050";
+      }
+    
+      var DataInicial = converteData(dataInicial);
+      var DataFinal = converteData(dataFinal); 
+    
+      var Cod = CampoCod.value;
+      var Produto = CampoProduto.value;
+    
+      if(Produto == "Escolha um Produto"){
+        var Produto = "";
+      } 
+    
+      var filtroProdutos = produtos.filter(function(value, i, arr){    
+    
+        return (Cod ? Cod == arr[i][0] : true) &&
+        (Produto ? Produto == arr[i][1] : true);
+    
+      });
+    
+      if(filtroProdutos.length == 0){
+        var m = "NÃO TEM PRODUTOS CADASTRADOS PARA ESTES CRITÉRIOS!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      var filtroContagem = contagem.filter(function(value, i, arr){
+    
+      var Data = converteData(arr[i][5]);
+    
+      return Data >= DataInicial && Data <= DataFinal &&
+      (Cod ? Cod == arr[i][1] : true) &&  
+      (Produto ? Produto == arr[i][2] : true);
+    
+      });
+    
+      if(filtroContagem.length == 0){
+        var m = "NÃO EXISTE CONTAGEM PARA ESTES CRITÉRIOS!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      var dadosRelatorio = [];
+    
+      for(var i = 0; i < filtroProdutos.length; i ++){
+    
+        var Cod = filtroProdutos[i][0];
+        var Produto = filtroProdutos[i][1];
+    
+        var TotalQtd = 0;
+        var TotalRs = 0; 
+    
+        for(var l = 0; l < filtroContagem.length; l++){
+    
+          if(filtroContagem[l][1] == Cod && filtroContagem[l][2] == Produto){
+            TotalQtd = parseFloat(TotalQtd) + parseFloat(filtroContagem[l][3]);
+            TotalRs = parseFloat(TotalRs) + parseFloat(filtroContagem[l][4]);
+          }
+    
+        }
+    
+        if (TotalQtd == 0 && TotalRs == 0){
+          }else{       
+          filtroProdutos[i][2] = TotalQtd;
+          filtroProdutos[i][3] = TotalRs;
+          dadosRelatorio.push(filtroProdutos[i]);
+        } 
+    
+        
+      } 
+    
+      GerarTabela(dadosRelatorio); 
+    
+      filtroProdutos.length = 0;
+      filtroContagem.length = 0;
+      dadosRelatorio.length = 0;
+    
+    }
+    
+    function GerarTabela(Dados){ 
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      var TotalQtd = 0;
+      var TotalRs = 0;  
+    
+      Dados.forEach(function(r){   
+    
+          var Linha = document.createElement("tr");
+    
+          var Coluna1 = document.createElement("td");
+          Coluna1.textContent = r[0];
+          var Coluna2 = document.createElement("td");
+          Coluna2.textContent = r[1];     
+          var Coluna3 = document.createElement("td");
+          Coluna3.textContent = parseFloat(r[2]).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+          var Coluna4 = document.createElement("td");
+          Coluna4.textContent = parseFloat(r[3]).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});      
+    
+          Linha.appendChild(Coluna1);
+          Linha.appendChild(Coluna2);
+          Linha.appendChild(Coluna3);
+          Linha.appendChild(Coluna4);      
+    
+          CorpoTabela.appendChild(Linha);
+    
+          TotalQtd = parseFloat(TotalQtd) + parseFloat(r[2]);
+          TotalRs = parseFloat(TotalRs) + parseFloat(r[3]);      
+    
+      });
+    
+      TotalQtd = parseFloat(TotalQtd).toLocaleString("pt-BR",{style:"decimal",decimal: "BRL"});
+      TotalRs = parseFloat(TotalRs).toLocaleString("pt-BR",{style:"decimal",decimal: "BRL"});
+        
+      var Linha = document.createElement("tr");
+    
+      var Coluna1 = document.createElement("td");
+      Coluna1.textContent = "TOTAL";
+      var Coluna2 = document.createElement("td");
+      Coluna2.textContent = "_";
+      var Coluna3 = document.createElement("td");
+      Coluna3.textContent = TotalQtd;
+      var Coluna4 = document.createElement("td");
+      Coluna4.textContent = TotalRs;  
+    
+      Linha.appendChild(Coluna1);
+      Linha.appendChild(Coluna2);
+      Linha.appendChild(Coluna3); 
+      Linha.appendChild(Coluna4);   
+    
+      CorpoTabela.appendChild(Linha);  
+    
+    }
+    
+    function sortTable(table, col, reverse) {
+       
+      if(col == 0 || col == 2 || col == 3){
+        return false;
+      }  
+    
+      var tb = table.tBodies[0],  
+        tr = Array.prototype.slice.call(tb.rows, 0),
+        i;  
+    
+      reverse = -((+reverse) || -1);
+    
+      tr = tr.sort(function(a, b) {
+        
+       if(a.cells[col].textContent.trim() != "TOTAL"){
+        if(a.cells[col].textContent.trim() != "_"){
+        return reverse * (a.cells[col].textContent.trim()
+          .localeCompare(b.cells[col].textContent.trim()));
+        }
+       }  
+    
+      });
+    
+      for (i = 0; i < tr.length; ++i)  tb.appendChild(tr[i]);
+      
+    }
+    
+    function makeSortable(table) {
+    
+      var th = table.tHead,  
+        i;    
+    
+      th && (th = th.rows[0]) && (th = th.cells);
+    
+      if (th) i = th.length;
+    
+      else return;
+    
+      while (--i >= 0)(function(i) {
+        var dir = 1;
+        th[i].addEventListener('click', function() {
+          sortTable(table, i, (dir = 1 - dir))
+        });
+      }(i));
+      
+    }
+    
+    function makeAllSortable(parent) {
+      
+      parent = parent || document.body;
+      var t = parent.getElementsByTagName('table'),
+        i = t.length;     
+    
+      while (--i >= 0) makeSortable(t[i]);
+    }
+    
+    window.onload = function(){
+      makeAllSortable();
+    }
+    
+    $(document).ready(function(){
+    
+      $("#btnExcel").click(function(e){
+    
+        e.preventDefault();
+    
+        var DivTabela = document.getElementById("divTabela");
+    
+        var Arquivo = new Blob(["\ufeff" + DivTabela.outerHTML],{type:"application/vnd.ms-excel"});
+    
+        var url = window.URL.createObjectURL(Arquivo);
+    
+        var a = document.createElement("a");
+    
+        a.href = url;
+    
+        a.download = "Dados Relatório";
+    
+        a.click();
+    
+      });
+    
+    });
+    
+    
+    document.getElementById("btnPdf").addEventListener("click", GerarPdf);
+    
+    function GerarPdf(){
+    
+      var DivTabela = document.getElementById("divTabela").innerHTML;
+    
+      var Estilo = "<style>";
+      Estilo = Estilo + "table {width: 100%; font: 12px Calibri;}";
+      Estilo = Estilo + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;}";
+      Estilo = Estilo + "padding: 2px 3px; text-align: left;";
+      Estilo = Estilo + "</style>";   
+    
+      var Doc = window.open("","","height=700,width=900");
+    
+      Doc.document.write("<html><head>");
+      Doc.document.write("<title>RELATÓRIO</title>");
+      Doc.document.write(Estilo);
+      Doc.document.write("</head>");
+      Doc.document.write("<body>");
+      Doc.document.write(DivTabela);
+      Doc.document.write("</body></html>");  
+    
+      Doc.print();
+      
+    } 
+    
+    </script>

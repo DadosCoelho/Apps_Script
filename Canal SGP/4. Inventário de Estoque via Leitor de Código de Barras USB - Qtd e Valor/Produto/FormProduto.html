@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloProduto")?>
+
+  </head>
+  <body>
+
+    <div id = "CaixaMsg">
+      <div>
+        <div id = "TituloMsg"></div>
+        <div id = "CorpoMsg"></div>
+        <div id = "RodapeMsg"></div>
+      </div>
+    </div>  
+    
+    <div id = "divObjetos">
+
+      <label id = "labelCod">Cod.</label>
+      <input id = "Cod" type = "text">
+
+      <label id = "labelProduto">Produto</label>
+      <input id = "Produto" type = "text" oninput = "CaixaAlta(event)"> 
+
+      <label id = "labelPreco">Preço</label>
+      <input id = "Preco" type = "text">
+
+      <button id = "btnLimpar">LIMPAR</button>
+      <button id = "btnSalvar">SALVAR</button>
+      <button id = "btnEditar">EDITAR</button>
+      <button id = "btnExcluir">EXCLUIR</button> 
+
+    </div>
+
+  <?!=Chamar("FormProduto-js")?>
+
+  </body>
+</html>
+
