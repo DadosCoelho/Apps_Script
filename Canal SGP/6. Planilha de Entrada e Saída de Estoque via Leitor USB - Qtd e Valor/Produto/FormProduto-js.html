@@ -1,0 +1,245 @@
+<script>
+
+    var CampoCod = document.getElementById("Cod");
+    var CampoProduto = document.getElementById("Produto");
+    var CampoCompra = document.getElementById("Compra");
+    var CampoVenda = document.getElementById("Venda");
+    var BtnSalvar = document.getElementById("btnSalvar");
+    var BtnEditar = document.getElementById("btnEditar");
+    var BtnExcluir = document.getElementById("btnExcluir");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button onclick = "Fechar()" style = "cursor:pointer; background-color:orange"><b> <font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function caixaMsgBox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    BtnExcluir.addEventListener("click", MsgBoxExcluir);
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var Estilo = 'style = "cursor: pointer; background-color: green"';
+      var Fonte = '<b><font color = "black" size = "5px">Sim</font></b>';
+    
+      var BtnSim = '<button onclick = "Excluir()"' + Estilo + '>' + Fonte + '</button>';
+    
+      var Estilo = 'style = "cursor: pointer; background-color: orange"';
+      var Fonte = '<b><font color = "black" size = "5px">Não</font></b>';
+    
+      var BtnNao = '<button onclick = "Fechar()"' + Estilo + '>' + Fonte + '</button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;  
+    
+    }
+    
+    function Excluir(){
+    
+      BtnExcluir.disabled = true;
+    
+      var Cod = CampoCod.value;
+        
+      if(Cod == ""){
+        var m = "CANCELADO. CAMPO CÓDIGO NÃO PODE SER VAZIO!";
+        caixaMsgBox(m);
+        BtnExcluir.disabled = false;
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirProduto(Cod);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        var m = r;
+        caixaMsgBox(m);
+        
+        BtnExcluir.disabled = false;
+    
+      }
+    
+    }
+    
+    CampoCompra.addEventListener("keypress", Ver);
+    CampoVenda.addEventListener("keypress", Ver);
+    
+    function Ver(e){
+    
+      var Caracteres = String.fromCharCode(e.keyCode); 
+    
+      var Permitir = '[0-9,]';
+    
+      if(Caracteres.match(Permitir)){
+        return true;
+        }else{
+        e.preventDefault(); 
+      }
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoCod.value = "";  
+      CampoProduto.value = "";
+      CampoCompra.value = "";
+      CampoVenda.value = "";
+    
+    }
+    
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    CampoCod.addEventListener("keyup", Pesquisar);
+    
+    function Pesquisar(e){
+    
+      var Tecla = e.which || e.keyCode;
+    
+      if(Tecla != 13){
+        return false;
+      }
+    
+      var Cod = CampoCod.value;
+      
+      CampoProduto.value = "";
+      CampoCompra.value = "";
+      CampoVenda.value = "";
+      
+      if(Cod == ""){
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).PesquisarProduto(Cod);
+    
+      function Retorno(r){    
+    
+        if(r != "PRODUTO NÃO ENCONTRADO!"){
+          CampoProduto.value = r[0];
+          CampoCompra.value = r[1];
+          CampoVenda.value = r[2];
+        }
+    
+      }
+    
+    }
+    
+    
+    BtnSalvar.addEventListener("click", Salvar);
+    
+    function Salvar(){
+    
+      BtnSalvar.disabled = true;
+    
+      var Cod = CampoCod.value;  
+      var Produto = CampoProduto.value;
+      var Compra = CampoCompra.value;
+      var Venda = CampoVenda.value;
+    
+      Cod = Cod.trim();  
+      Produto = Produto.trim();
+    
+      if(Cod == "" || Produto == "" || Compra == "" || Venda == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);
+        BtnSalvar.disabled = false;
+        return false;
+      }
+    
+      var Dados = {
+        Cod: Cod,    
+        Produto: Produto,
+        Compra: Compra,
+        Venda: Venda,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarProduto(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+        Limpar();
+    
+        BtnSalvar.disabled = false;
+    
+      }
+    
+    }
+    
+    
+    BtnEditar.addEventListener("click", Editar);
+    
+    function Editar(){
+    
+      BtnEditar.disabled = true;
+    
+      var Cod = CampoCod.value; 
+      var Produto = CampoProduto.value;
+      var Compra = CampoCompra.value;
+      var Venda = CampoVenda.value;
+    
+      Cod = Cod.trim();  
+      Produto = Produto.trim();
+    
+      if(Cod == "" || Produto == "" || Compra == "" || Venda == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);
+        BtnEditar.disabled = false;
+        return false;
+      }
+    
+      var Dados = {
+        Cod: Cod,    
+        Produto: Produto,
+        Compra: Compra,
+        Venda: Venda,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).EditarProduto(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "EDITADO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        BtnEditar.disabled = false;
+    
+      }
+    
+    }
+    
+    </script>
