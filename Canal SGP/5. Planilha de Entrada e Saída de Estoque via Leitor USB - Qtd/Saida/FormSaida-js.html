@@ -1,0 +1,516 @@
+<script>
+
+    var CampoCod = document.getElementById("Cod");
+    var CampoQtd = document.getElementById("Qtd");
+    var BtnSalvar = document.getElementById("btnSalvar");
+    var DivTotal = document.getElementById("divTotal");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", MsgBoxConfirmar);
+    
+    function MsgBoxConfirmar(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE LIMPAR?";
+    
+      var BtnSim = '<button onclick = "Limpar()" style = "cursor:pointer; background-color: green">'+ '<b><font color = "black" size = "5px">Sim</font></b></button>';
+    
+      var BtnNao = '<button onclick = "Fechar()" style = "cursor:pointer; background-color: orange">'+ '<b><font color = "black" size = "5px">Não</font></b></button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;
+    
+    }
+    
+    document.addEventListener("DOMContentLoaded", IniciarFormulario);
+    
+    var dadosProdutos;
+    var bipadoSaida = [];
+    var Total = 0;
+    
+    function IniciarFormulario(){
+    
+      google.script.run.withSuccessHandler(Retorno).buscaProdutos();
+    
+      function Retorno(arrays){
+        
+        dadosProdutos = arrays.dadosProdutos.slice();    
+    
+        var BackupLeituraSaida = JSON.parse(localStorage.getItem("BackupLeituraSaida"));
+    
+        if(BackupLeituraSaida != null){
+          if(BackupLeituraSaida.length > 0){
+            CarregarBackup(BackupLeituraSaida)
+          }
+        }  
+    
+      } 
+      
+    }
+    
+    
+    CampoQtd.addEventListener("keypress", Ver);
+    
+    function Ver(e){
+    
+      var Caracteres = String.fromCharCode(e.keyCode);
+    
+      var Permitir = '[0-9,]';
+    
+      if(Caracteres.match(Permitir)){
+        return true;
+        }else{
+        e.preventDefault();
+      }
+    
+    }
+    
+    function Limpar(){  
+    
+      CampoCod.value = "";
+      CampoQtd.value = "";  
+      Total = "";
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      }
+    
+      localStorage.removeItem("BackupLeituraSaida");
+    
+      DivTotal.innerHTML = "";
+    
+      Fechar();
+    
+      bipadoSaida.length = 0;
+    
+    }
+    
+    
+    document.getElementById("Cod").addEventListener("keydown", ExecutarLeitura);
+    
+    function ExecutarLeitura(e){  
+    
+      var Tecla = e.keyCode;
+    
+      if(Tecla == 13){
+        EnviarTabela();
+        e.preventDefault();
+      }
+    
+    }
+    
+    function EnviarTabela() {
+      
+      var Cod = CampoCod.value;
+    
+      if(Cod == ""){
+        return false;
+      }
+      
+      var Produto = "";
+    
+      for(var i = 0; i < dadosProdutos.length; i++){
+    
+        if(dadosProdutos[i][0] == Cod){
+          Produto = dadosProdutos[i][1];
+          break;
+        }
+    
+      }
+    
+      if(Produto == ""){
+        Produto = "SEM CADASTRO";
+      }
+    
+      var Qtd = CampoQtd.value;
+      var Data = new Date();
+      
+      var Hora = Data.getHours().toString().padStart(2, '0');
+      var Minutos = Data.getMinutes().toString().padStart(2, '0');
+      var Segundos = Data.getSeconds().toString().padStart(2, '0');
+    
+      var Hora =  Hora + ":" + Minutos + ":" + Segundos;
+      
+      var Data = new Date().toLocaleString('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', timeZone: 'America/Sao_Paulo'});   
+    
+      if(Data.length > 0){
+        var dataQuebrada = Data.split("/");
+        var Ano = dataQuebrada[2].padStart(2, '0');
+        var Dia = dataQuebrada[1].padStart(2, '0');
+        var Mes = dataQuebrada[0].padStart(2, '0');    
+        var Data = Dia + "/" + Mes + "/" + Ano;
+      }  
+        
+      if (Cod == "") {    
+        return false;
+      }
+      
+      if(Qtd == ""){
+        Qtd = "1";
+      }
+    
+      var tabela = document.getElementById("Tab").getElementsByTagName('tbody')[0];
+      
+      var novaLinha = tabela.insertRow(tabela.rows.length);
+    
+      var cell1 = novaLinha.insertCell(0);
+      var cell2 = novaLinha.insertCell(1);
+      var cell3 = novaLinha.insertCell(2);
+      var cell4 = novaLinha.insertCell(3);
+      var cell5 = novaLinha.insertCell(4);
+      var cell6 = novaLinha.insertCell(5);
+      
+      cell1.innerHTML = Cod;
+      cell2.innerHTML = Produto;
+      cell3.innerHTML = Qtd;
+      cell4.innerHTML = Data;
+      cell5.innerHTML = Hora;
+      cell6.innerHTML = '<button onclick="ExcluirLinha(this)" style = "cursor:pointer">Excluir</button>';
+    
+      CampoCod.value = "";
+      CampoQtd.value = "";  
+    
+      document.documentElement.scrollTop += document.documentElement.scrollHeight;
+    
+      bipadoSaida.push([Cod, Produto, Qtd, Data, Hora]);
+    
+      localStorage.setItem("BackupLeituraSaida", JSON.stringify(bipadoSaida));    
+      
+      var ConvertQtd = Qtd.replace(/\./g,'');
+      var ConvertQtd = ConvertQtd.replace(/\,/g,'.');  
+    
+      var TotalQtd = DivTotal.innerHTML;
+    
+      if(TotalQtd == ""){
+        TotalQtd = "0";
+      } 
+    
+      var ConvertTotal = TotalQtd.replace(/\./g,'');
+      var ConvertTotal = ConvertTotal.replace(/\,/g,'.');    
+    
+      var Total = (parseFloat(ConvertTotal) + parseFloat(ConvertQtd));
+    
+      if(parseFloat(Total) > parseFloat(0)){
+        DivTotal.innerHTML = Total.toLocaleString("pt-BR", {style: "decimal" , decimal:"BRL"});    
+        }else{    
+        DivTotal.innerHTML = "";
+      }
+    
+    }
+      
+    function ExcluirLinha(botao) {
+    
+      var linha = botao.parentNode.parentNode;
+     
+      var Qtd = linha.cells[2].textContent;
+      
+      linha.parentNode.removeChild(linha);  
+          
+      var ConvertQtd = Qtd.replace(/\./g,'');
+      var ConvertQtd = ConvertQtd.replace(/\,/g,'.');
+    
+      var TotalQtd = DivTotal.innerHTML;  
+    
+      var ConvertTotal = TotalQtd.replace(/\./g,'');
+      var ConvertTotal = ConvertTotal.replace(/\,/g,'.');
+      
+      var TotalQtd = parseFloat(ConvertTotal) - parseFloat(ConvertQtd);
+    
+      if(parseFloat(TotalQtd) > parseFloat(0)){
+        DivTotal.innerHTML = TotalQtd.toLocaleString("pt-BR", {style: "decimal" , decimal:"BRL"});    
+        }else{    
+        DivTotal.innerHTML = "";
+      }
+    
+      bipadoSaida.length = 0
+    
+      var Tabela = document.getElementById("Tab");
+      var Linhas = Tabela.getElementsByTagName("tr");
+      
+      for (var i = 0; i < Linhas.length; i++) {
+        var Linha = [];
+        var Colunas = Linhas[i].getElementsByTagName("td");
+    
+        for (var j = 0; j < Colunas.length; j++) {
+          if(Colunas[j].innerText != "Excluir" && Colunas[j].innerText != ""){
+            Linha.push(Colunas[j].innerText);
+          }
+        }    
+    
+        if(Linha.length != 0){
+          bipadoSaida.push(Linha);
+        }
+    
+      }  
+    
+      localStorage.setItem("BackupLeituraSaida", JSON.stringify(bipadoSaida));  
+    
+    }
+    
+    function CarregarBackup(Dados){
+    
+      var tabela = document.getElementById("Tab").getElementsByTagName('tbody')[0];
+    
+      var Total = 0;
+    
+      for(var i = 0; i < Dados.length; i++){   
+      
+          var novaLinha = tabela.insertRow(tabela.rows.length);
+    
+          var cell1 = novaLinha.insertCell(0);
+          var cell2 = novaLinha.insertCell(1);
+          var cell3 = novaLinha.insertCell(2);
+          var cell4 = novaLinha.insertCell(3);
+          var cell5 = novaLinha.insertCell(4);
+          var cell6 = novaLinha.insertCell(5);
+          
+          cell1.innerHTML = Dados[i][0];
+          cell2.innerHTML = Dados[i][1];
+          cell3.innerHTML = Dados[i][2];
+          cell4.innerHTML = Dados[i][3];
+          cell5.innerHTML = Dados[i][4];
+          cell6.innerHTML = '<button onclick="ExcluirLinha(this)" style = "cursor:pointer">Excluir</button>'; 
+    
+          var Qtd = Dados[i][2];
+          var ConverteQtd = Qtd.replace(/\./g,'');
+          var ConverteQtd = ConverteQtd.replace(/\,/g,'.');
+    
+          Total = parseFloat(Total) + parseFloat(ConverteQtd);   
+        
+      }
+    
+      bipadoSaida = Dados;  
+    
+      document.documentElement.scrollTop += document.documentElement.scrollHeight;
+    
+      if(parseFloat(Total) > parseFloat(0)){
+        DivTotal.innerHTML = Total.toLocaleString("pt-BR", {style: "decimal" , decimal:"BRL"});    
+        }else{    
+        DivTotal.innerHTML = "";
+      }
+    
+    }
+    
+    
+    BtnSalvar.addEventListener("click", Salvar)
+    
+    function Salvar() {
+    
+      BtnSalvar.disabled = true;
+    
+      var Tabela = document.getElementById("Tab");
+      var Linhas = Tabela.getElementsByTagName("tr");
+      var Dados = [];
+    
+      for (var i = 0; i < Linhas.length; i++) {
+        var Linha = [];
+        var Colunas = Linhas[i].getElementsByTagName("td");
+    
+        for (var j = 0; j < Colunas.length; j++) {
+          if(Colunas[j].innerText != "Excluir" && Colunas[j].innerText != ""){
+            Linha.push(Colunas[j].innerText);
+          }
+        }    
+    
+        if(Linha.length != 0){
+          Dados.push(Linha);
+        }
+    
+      }  
+    
+      if(Dados.length == 0){
+        var m = "NÃO TEM DADOS NA TABELA!";
+        caixaMsgbox(m);
+        BtnSalvar.disabled = false;
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarSaida(Dados);
+    
+      function Retorno(r){
+    
+        if(r == "REGISTRADO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        var m = r;
+        caixaMsgbox(m);
+    
+        BtnSalvar.disabled = false;
+    
+      }
+      
+    }
+    
+    
+    function sortTable(table, col, reverse) {
+       
+      if(col == 0 || col == 2 || col == 3 || col == 4){
+        return false;
+      }  
+    
+      var tb = table.tBodies[0],  
+        tr = Array.prototype.slice.call(tb.rows, 0),
+        i;  
+    
+      reverse = -((+reverse) || -1);
+    
+      tr = tr.sort(function(a, b) {
+       
+        return reverse * (a.cells[col].textContent.trim()
+          .localeCompare(b.cells[col].textContent.trim()) 
+        );   
+    
+      });
+    
+      for (i = 0; i < tr.length; ++i)  tb.appendChild(tr[i]);
+      
+    }
+    
+    function makeSortable(table) {
+    
+      var th = table.tHead,  
+        i;    
+    
+      th && (th = th.rows[0]) && (th = th.cells);
+    
+      if (th) i = th.length;
+    
+      else return;
+    
+      while (--i >= 0)(function(i) {
+        var dir = 1;
+        th[i].addEventListener('click', function() {
+          sortTable(table, i, (dir = 1 - dir))
+        });
+      }(i));
+      
+    }
+    
+    function makeAllSortable(parent) {
+      
+      parent = parent || document.body;
+      var t = parent.getElementsByTagName('table'),
+        i = t.length;     
+    
+      while (--i >= 0) makeSortable(t[i]);
+    }
+    
+    window.onload = function(){
+      makeAllSortable();
+    }
+    
+    $(document).ready(function(){
+    
+      $("#btnExcel").click(function(e){
+    
+        var Tabela = document.getElementById("Tab");
+      
+        var Linhas = Tabela.getElementsByTagName("tr");
+        
+        for (var i = 1; i < Linhas.length; i++) {
+          
+          var ColBt = Linhas[i].getElementsByTagName("td")[5];
+          
+          ColBt.innerHTML = "";      
+          
+        }
+    
+        e.preventDefault();
+    
+        var DivTabela = document.getElementById("divTabela");
+    
+        var Arquivo = new Blob(["\ufeff" + DivTabela.outerHTML],{type:"application/vnd.ms-excel"});
+    
+        var url = window.URL.createObjectURL(Arquivo);
+    
+        var a = document.createElement("a");
+    
+        a.href = url;
+    
+        a.download = "Dados Saídas";
+    
+        a.click();
+    
+        for (var i = 1; i < Linhas.length; i++) {
+        
+          var ColBt = Linhas[i].getElementsByTagName("td")[5];
+          
+          ColBt.innerHTML = '<button onclick="ExcluirLinha(this)">Excluir</button>';    
+          
+        }  
+    
+      });
+    
+    });
+    
+    
+    document.getElementById("btnPdf").addEventListener("click", GerarPdf);
+    
+    function GerarPdf(){
+    
+      var Tabela = document.getElementById("Tab");
+      
+      var Linhas = Tabela.getElementsByTagName("tr");
+      
+      for (var i = 1; i < Linhas.length; i++) {
+        
+        var ColBt = Linhas[i].getElementsByTagName("td")[5];
+        
+        ColBt.innerHTML = "";    
+       
+      }
+    
+      var DivTabela = document.getElementById("divTabela").innerHTML;
+    
+      var Estilo = "<style>";
+      Estilo = Estilo + "table {width: 100%; font: 12px Calibri;}";
+      Estilo = Estilo + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;}";
+      Estilo = Estilo + "padding: 2px 3px; text-align: left;";
+      Estilo = Estilo + "</style>";   
+    
+      var Doc = window.open("","","height=700,width=900");
+    
+      Doc.document.write("<html><head>");
+      Doc.document.write("<title>SAÍDAS</title>");
+      Doc.document.write(Estilo);
+      Doc.document.write("</head>");
+      Doc.document.write("<body>");
+      Doc.document.write(DivTabela);
+      Doc.document.write("</body></html>"); 
+    
+      for (var i = 1; i < Linhas.length; i++) {
+        
+        var ColBt = Linhas[i].getElementsByTagName("td")[5];
+        
+        ColBt.innerHTML = '<button onclick="ExcluirLinha(this)">Excluir</button>';    
+        
+      }  
+    
+      Doc.print();
+      
+    } 
+    
+    </script>
