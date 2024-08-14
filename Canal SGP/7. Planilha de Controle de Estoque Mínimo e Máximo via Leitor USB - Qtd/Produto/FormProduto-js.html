@@ -1,0 +1,257 @@
+<script>
+
+    var CampoCod = document.getElementById("Cod");
+    var CampoProduto = document.getElementById("Produto");
+    var CampoMinimo = document.getElementById("Minimo");
+    var CampoMaximo = document.getElementById("Maximo");
+    var BtnSalvar = document.getElementById("btnSalvar");
+    var BtnEditar = document.getElementById("btnEditar");
+    var BtnExcluir = document.getElementById("btnExcluir");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button onclick = "Fechar()" style = "cursor:pointer; background-color:orange"><b> <font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function caixaMsgBox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    BtnExcluir.addEventListener("click", MsgBoxExcluir);
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var Estilo = 'style = "cursor: pointer; background-color: green"';
+      var Fonte = '<b><font color = "black" size = "5px">Sim</font></b>';
+    
+      var BtnSim = '<button onclick = "Excluir()"' + Estilo + '>' + Fonte + '</button>';
+    
+      var Estilo = 'style = "cursor: pointer; background-color: orange"';
+      var Fonte = '<b><font color = "black" size = "5px">Não</font></b>';
+    
+      var BtnNao = '<button onclick = "Fechar()"' + Estilo + '>' + Fonte + '</button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;  
+    
+    }
+    
+    function Excluir(){  
+    
+      var Cod = CampoCod.value;
+        
+      if(Cod == ""){
+        var m = "CANCELADO. CAMPO CÓDIGO NÃO PODE SER VAZIO!";
+        caixaMsgBox(m);    
+        return false;
+      }
+    
+      BtnExcluir.disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirProduto(Cod);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        BtnExcluir.disabled = false;
+    
+      }
+    
+    }
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    CampoCod.addEventListener("keypress", Ver);
+    
+    function Ver(e){
+    
+      var Caracteres = String.fromCharCode(e.keyCode);
+    
+      var Permitir = '[0-9]';
+    
+      if(Caracteres.match(Permitir)){
+          return true;
+          }else{
+          e.preventDefault();
+      }
+    
+    }
+    
+    CampoMinimo.addEventListener("keypress", Ver2);
+    CampoMaximo.addEventListener("keypress", Ver2);
+    
+    function Ver2(e){
+    
+      var Caracteres = String.fromCharCode(e.keyCode);
+    
+      var Permitir = '[0-9,]';
+    
+      if(Caracteres.match(Permitir)){
+          return true;
+          }else{
+          e.preventDefault();
+      }
+    
+    }
+    
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoCod.value = "";  
+      CampoProduto.value = "";
+      CampoMinimo.value = "";
+      CampoMaximo.value = "";
+    
+    }
+    
+    
+    BtnSalvar.addEventListener("click", Salvar);
+    
+    function Salvar(){  
+    
+      var Cod = CampoCod.value;  
+      var Produto = CampoProduto.value;
+      var Minimo = CampoMinimo.value;
+      var Maximo = CampoMaximo.value;
+    
+      Cod = Cod.trim();  
+      Produto = Produto.trim();
+    
+      if(Cod == "" || Produto == "" || Minimo == "" || Maximo == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);    
+        return false;
+      }
+    
+      BtnSalvar.disabled = true;
+    
+      var Dados = {
+        Cod: Cod,    
+        Produto: Produto,
+        Minimo: Minimo,
+        Maximo: Maximo,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarProduto(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+        Limpar();
+    
+        BtnSalvar.disabled = false;
+    
+      }
+    
+    }
+    
+    CampoCod.addEventListener("keyup", Pesquisar);
+    
+    function Pesquisar(e){
+    
+      var Tecla = e.which || e.keyCode;
+    
+      if(Tecla != 13){
+        return false;
+      }
+    
+      var Cod = CampoCod.value;
+      
+      CampoProduto.value = "";
+      CampoMinimo.value = "";
+      CampoMaximo.value = "";
+      
+      if(Cod == ""){
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).PesquisarProduto(Cod);
+    
+      function Retorno(r){    
+    
+        if(r != "PRODUTO NÃO ENCONTRADO!"){
+          CampoProduto.value = r[0];
+          CampoMinimo.value = r[1];
+          CampoMaximo.value = r[2];
+        }
+    
+      }
+    
+    }
+    
+    BtnEditar.addEventListener("click", Editar);
+    
+    function Editar(){  
+    
+      var Cod = CampoCod.value; 
+      var Produto = CampoProduto.value;
+      var Minimo = CampoMinimo.value;
+      var Maximo = CampoMaximo.value;
+    
+      Cod = Cod.trim();  
+      Produto = Produto.trim();
+    
+      if(Cod == "" || Produto == "" || Minimo == "" || Maximo == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);    
+        return false;
+      }
+    
+      BtnEditar.disabled = true;
+    
+      var Dados = {
+        Cod: Cod,    
+        Produto: Produto,
+        Minimo: Minimo,
+        Maximo: Maximo,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).EditarProduto(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "EDITADO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        BtnEditar.disabled = false;
+    
+      }
+    
+    }
+    
+    </script>
