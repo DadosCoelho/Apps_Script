@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloSaida")?>
+
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+    </div> 
+
+    <div id = "divCabecalho">
+
+    <label id = "labelCod">Código</label>
+    <input id = "Cod" value = "" type = "text">
+
+    <label id = "labelValidade">D. Validade</label>
+    <input id = "Validade" value = ""  type = "date">
+
+    <label id = "labelQtd">Qtd</label>
+    <input id = "Qtd" value = ""  type = "text">
+   
+    <button id = "btnLimpar">LIMPAR</button>
+    <button id = "btnSalvar">SALVAR</button>   
+    <button id = "btnPdf">PDF</button>
+    <button id = "btnExcel">EXCEL</button> 
+
+    <div id = "divTotal"></div>
+   
+   </div>
+
+   <div id = "divTabela">
+
+     <table id = "Tab" width = "100%"  border = "1px" cellpadding = "0px">
+
+       <thead id = "Cabecalho">
+         <tr>
+           <th width="20%">CÓDIGO</th>
+           <th width="20%">PRODUTO</th>
+           <th width="12%">QTD</th>
+           <th width="14%"style = "background-color: #FF0000;">DATA DE VALIDADE</th>
+           <th width="14%">DATA DE LEITURA</th>
+           <th width="10%">HORA</th>
+           <th width="10%">BOTÃO</th>       
+         </tr>
+       </thead>
+
+       <tbody id = "CorpoTabela">
+
+       </tbody>
+
+     </table>
+
+  </div>      
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+
+  <?!=Chamar("FormSaida-js")?> 
+
+  </body>
+</html>
