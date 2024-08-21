@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloFiltroEntrada")?>
+
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+    </div> 
+
+    <div id = "divCabecalho">
+
+      <label id = "labelData1">Data Inic.</label>
+      <input id = "data1" type = "date" onblur = "Filtro()">
+
+      <label id = "labelData2">Data Fin.</label>
+      <input id = "data2" type = "date" onblur = "Filtro()">
+
+      <label id = "labelCod">Código</label>
+      <input id = "Cod" value = "" type = "text">
+
+      <label id = "labelProduto">Produto</label>
+      <select id = "Produto" class = "browser-default">
+
+        <option value = "" disabled selected>Escolha um Produto</option>
+
+        <?for(var i = 0; i < list.length; i++){?>
+                
+          <option><?=list[i];?></option>
+          
+        <?}?>
+
+      </select>
+    
+      <button id = "btnLimpar">LIMPAR</button>
+      <button id = "btnFiltrar">FILTRAR</button>   
+      <button id = "btnPdf">PDF</button>
+      <button id = "btnExcel">EXCEL</button>
+
+      <label id = "labelLeitura">Leitura</label>
+      <input id = "Leitura" type = "checkbox" checked>
+
+      <label id = "labelValidade">Validade</label>
+      <input id = "Validade" type = "checkbox">   
+
+    </div>
+
+    <div id = "divTabela">
+
+     <table id = "Tab" width = "100%"  border = "1px" cellpadding = "0px">
+
+       <thead id = "Cabecalho">
+         <tr>
+           <th width="7%">ID</th>
+           <th width="18%">CÓDIGO</th>
+           <th width="24%">PRODUTO</th>
+           <th width="8%">QTD</th>
+           <th width="13%"style = "background-color: #FF0000;">DATA VALIDADE</th>
+           <th width="13%">DATA LEITURA</th>
+           <th width="9%">HORA</th>
+           <th width="8%">BOTÃO</th>                              
+         </tr>
+       </thead>
+
+       <tbody id = "CorpoTabela">
+
+       </tbody>
+
+     </table>
+
+  </div>      
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script> 
+
+    <?!=Chamar("FiltroEntrada-js")?>
+    
+  </body>
+</html>
