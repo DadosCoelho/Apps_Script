@@ -1,0 +1,220 @@
+<script>
+
+    var CampoLista = document.getElementById("listaLocalizacao");
+    var CampoLocalizacao = document.getElementById("Localizacao");
+    var BtnSalvar = document.getElementById("btnSalvar");
+    var BtnEditar = document.getElementById("btnEditar");
+    var BtnExcluir = document.getElementById("btnExcluir");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button onclick = "Fechar()" style = "cursor:pointer; background-color:orange"><b> <font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function caixaMsgBox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    BtnExcluir.addEventListener("click", MsgBoxExcluir);
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var Estilo = 'style = "cursor: pointer; background-color: green"';
+      var Fonte = '<b><font color = "black" size = "5px">Sim</font></b>';
+    
+      var BtnSim = '<button onclick = "Excluir()"' + Estilo + '>' + Fonte + '</button>';
+    
+      var Estilo = 'style = "cursor: pointer; background-color: orange"';
+      var Fonte = '<b><font color = "black" size = "5px">Não</font></b>';
+    
+      var BtnNao = '<button onclick = "Fechar()"' + Estilo + '>' + Fonte + '</button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;  
+    
+    }
+    
+    function Excluir(){
+    
+      var Localizacao = CampoLista.value;
+        
+      if(Localizacao == ""){
+        var m = "CANCELADO. CAMPO LISTA NÃO PODE SER VAZIO!";
+        caixaMsgBox(m);
+        return false;
+      }
+    
+      BtnExcluir.disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirLocalizacao(Localizacao);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          Limpar();
+          AtualizarLocalizacoes();
+        }
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        BtnExcluir.disabled = false;
+    
+      }
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoLista.value = "";  
+      CampoLocalizacao.value = "";
+      BtnSalvar.disabled = false;  
+    
+    }
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    CampoLista.addEventListener("click", CarregarLocalizacao);
+    
+    function CarregarLocalizacao(){  
+    
+      var Lista = CampoLista.value;  
+    
+      if(Lista != "Escolha uma Localização" && Lista != ""){   
+        CampoLocalizacao.value = CampoLista.value;
+        BtnSalvar.disabled = true;    
+      }  
+    
+    }
+    
+    
+    BtnSalvar.addEventListener("click", Salvar);
+    
+    function Salvar(){  
+    
+      var Localizacao = CampoLocalizacao.value;
+      var Localizacao = Localizacao.trim();  
+    
+      if(Localizacao == ""){
+        var m = "PRECISA INFORMAR LOCALIZAÇÃO!";
+        caixaMsgBox(m);   
+        return false;
+      }
+    
+      BtnSalvar.disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarLocalizacao(Localizacao);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "REGISTRADO COM SUCESSO!"){
+          Limpar();
+          AtualizarLocalizacoes();
+        }
+        
+        BtnSalvar.disabled = false;
+    
+      }
+    
+    }
+    
+    
+    BtnEditar.addEventListener("click", Editar);
+    
+    function Editar(){  
+    
+      var Lista = CampoLista.value; 
+      var Localizacao = CampoLocalizacao.value;
+        
+      var Localizacao = Localizacao.trim();
+    
+      if(Lista == "" || Localizacao == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);    
+        return false;
+      }
+    
+      BtnEditar.disabled = true;
+    
+      var Dados = {
+        Lista: Lista,    
+        Localizacao: Localizacao,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).EditarLocalizacao(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "EDITADO COM SUCESSO!"){
+          Limpar();
+          AtualizarLocalizacoes();      
+        }
+    
+        BtnEditar.disabled = false;
+    
+      }
+    
+    }
+    
+    function AtualizarLocalizacoes(){
+    
+      while(CampoLista.length){
+        CampoLista.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode("Escolha uma Localização");
+      NovaOpcao.appendChild(Texto);
+      CampoLista.insertBefore(NovaOpcao, CampoLista.lastChild);  
+    
+      CampoLista.options[0].disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).AtualizarLocalizacoes();
+    
+      function Retorno(lista){
+    
+        lista.forEach(function(r){
+    
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(r[0]);
+          NovaOpcao.appendChild(Texto);
+    
+          CampoLista.insertBefore(NovaOpcao, CampoLista.lastChild);
+    
+        });
+    
+      }
+    
+    }
+    
+    </script>
