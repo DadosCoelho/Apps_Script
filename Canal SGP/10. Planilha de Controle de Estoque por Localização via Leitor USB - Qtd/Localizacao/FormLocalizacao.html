@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloLocalizacao")?>
+
+  </head>
+  <body>
+
+    <div id = "CaixaMsg">
+      <div>
+        <div id = "TituloMsg"></div>
+        <div id = "CorpoMsg"></div>
+        <div id = "RodapeMsg"></div>
+      </div>
+    </div>  
+    
+    <div id = "divObjetos">
+
+      <label id = "labelListaLocalizacao"> Lista</label>
+      <select id = "listaLocalizacao" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma Localização</option>
+
+      <? for(var i = 0; i < list.length; i++){?>
+          <option> <?=list[i];?> </option>
+      <?}?>
+
+      </select>      
+
+      <label id = "labelLocalizacao">Localização</label>
+      <input id = "Localizacao" type = "text" oninput = "CaixaAlta(event)"> 
+
+      <button id = "btnLimpar">LIMPAR</button>
+      <button id = "btnSalvar">SALVAR</button>
+      <button id = "btnEditar">EDITAR</button>
+      <button id = "btnExcluir">EXCLUIR</button> 
+
+    </div>
+
+  <?!=Chamar("FormLocalizacao-js")?>
+
+  </body>
+</html>
+
