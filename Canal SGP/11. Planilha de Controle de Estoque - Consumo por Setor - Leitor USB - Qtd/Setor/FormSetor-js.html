@@ -1,0 +1,220 @@
+<script>
+
+    var CampoLista = document.getElementById("listaSetor");
+    var CampoSetor = document.getElementById("Setor");
+    var BtnSalvar = document.getElementById("btnSalvar");
+    var BtnEditar = document.getElementById("btnEditar");
+    var BtnExcluir = document.getElementById("btnExcluir");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button onclick = "Fechar()" style = "cursor:pointer; background-color:orange"><b> <font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function caixaMsgBox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m;
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    BtnExcluir.addEventListener("click", MsgBoxExcluir);
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var Estilo = 'style = "cursor: pointer; background-color: green"';
+      var Fonte = '<b><font color = "black" size = "5px">Sim</font></b>';
+    
+      var BtnSim = '<button onclick = "Excluir()"' + Estilo + '>' + Fonte + '</button>';
+    
+      var Estilo = 'style = "cursor: pointer; background-color: orange"';
+      var Fonte = '<b><font color = "black" size = "5px">Não</font></b>';
+    
+      var BtnNao = '<button onclick = "Fechar()"' + Estilo + '>' + Fonte + '</button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;  
+    
+    }
+    
+    function Excluir(){
+    
+      var Setor = CampoLista.value;
+        
+      if(Setor == ""){
+        var m = "CANCELADO. CAMPO LISTA NÃO PODE SER VAZIO!";
+        caixaMsgBox(m);
+        return false;
+      }
+    
+      BtnExcluir.disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirSetor(Setor);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          Limpar();
+          AtualizarSetores();
+        }
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        BtnExcluir.disabled = false;
+    
+      }
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoLista.value = "";  
+      CampoSetor.value = "";
+      BtnSalvar.disabled = false;  
+    
+    }
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    CampoLista.addEventListener("click", CarregarSetor);
+    
+    function CarregarSetor(){  
+    
+      var Lista = CampoLista.value;  
+    
+      if(Lista != "Escolha um Setor" && Lista != ""){   
+        CampoSetor.value = CampoLista.value;
+        BtnSalvar.disabled = true;    
+      }  
+    
+    }
+    
+    
+    BtnSalvar.addEventListener("click", Salvar);
+    
+    function Salvar(){  
+    
+      var Setor = CampoSetor.value;
+      var Setor = Setor.trim();  
+    
+      if(Setor == ""){
+        var m = "PRECISA INFORMAR SETOR!";
+        caixaMsgBox(m);   
+        return false;
+      }
+    
+      BtnSalvar.disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarSetor(Setor);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "REGISTRADO COM SUCESSO!"){
+          Limpar();
+          AtualizarSetores();
+        }
+        
+        BtnSalvar.disabled = false;
+    
+      }
+    
+    }
+    
+    
+    BtnEditar.addEventListener("click", Editar);
+    
+    function Editar(){  
+    
+      var Lista = CampoLista.value; 
+      var Setor = CampoSetor.value;
+        
+      var LSetor = Setor.trim();
+    
+      if(Lista == "" || Setor == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgBox(m);    
+        return false;
+      }
+    
+      BtnEditar.disabled = true;
+    
+      var Dados = {
+        Lista: Lista,    
+        Setor: Setor,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).EditarSetor(Dados);
+    
+      function Retorno(r){
+    
+        var m = r;
+        caixaMsgBox(m);
+    
+        if(r == "EDITADO COM SUCESSO!"){
+          Limpar();
+          AtualizarSetores();      
+        }
+    
+        BtnEditar.disabled = false;
+    
+      }
+    
+    }
+    
+    function AtualizarSetores(){
+    
+      while(CampoLista.length){
+        CampoLista.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode("Escolha um Setor");
+      NovaOpcao.appendChild(Texto);
+      CampoLista.insertBefore(NovaOpcao, CampoLista.lastChild);  
+    
+      CampoLista.options[0].disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).AtualizarSetores();
+    
+      function Retorno(lista){
+    
+        lista.forEach(function(r){
+    
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(r[0]);
+          NovaOpcao.appendChild(Texto);
+    
+          CampoLista.insertBefore(NovaOpcao, CampoLista.lastChild);
+    
+        });
+    
+      }
+    
+    }
+    
+    </script>
