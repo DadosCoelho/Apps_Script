@@ -1,0 +1,595 @@
+<script>
+
+    var CampoData1 = document.getElementById("data1");
+    var CampoData2 = document.getElementById("data2");
+    var CampoPedido = document.getElementById("Pedido");
+    var CampoLinha = document.getElementById("Linha");
+    var CampoProduto = document.getElementById("Produto");
+    var CampoCliente = document.getElementById("Cliente");
+    var CampoVendedor = document.getElementById("Vendedor");
+    var CampoEstado = document.getElementById("Estado");
+    var CampoCidade = document.getElementById("Cidade");
+    var CampoStatus = document.getElementById("Status");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+    
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    document.addEventListener("DOMContentLoaded", IniciarFormulario);
+    
+    var cidades;
+    var produtos;
+    var pedidos;
+    
+    function IniciarFormulario(){
+    
+      google.script.run.withSuccessHandler(Retorno).buscaDados();
+    
+      function Retorno(arrays){
+        cidades = arrays.dadosCidades.slice();
+        produtos = arrays.dadosProdutos.slice();
+        pedidos = arrays.dadosPedidos.slice(); 
+    
+        if(CampoData1.value == "" && CampoPedido.value == "" && CampoLinha.value == "" && CampoProduto.value == "" && CampoCliente.value == "" && CampoVendedor.value == "" && CampoEstado.value == "" && CampoCidade.value == "" && CampoStatus.value == ""){
+    
+          var data = new Date();
+          data.setDate(data.getDate() - 30);
+    
+          CampoData1.value = new Date(data).toISOString().substring(0,10);
+          CampoData2.value = new Date().toISOString().substring(0,10);
+    
+        }
+    
+        Filtro();
+    
+      }
+    
+    }
+    
+    function LimparLista(Campo,Opt,Vazio){
+    
+      while(Campo.length){
+        Campo.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode(Opt);
+      NovaOpcao.appendChild(Texto);
+      Campo.insertBefore(NovaOpcao, Campo.lastChild);
+    
+      if(Vazio == "SIM"){
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(" ");
+        NovaOpcao.appendChild(Texto);
+        Campo.insertBefore(NovaOpcao, Campo.lastChild);
+      }
+    
+      Campo.options[0].disabled = true;
+    
+    }
+    
+    CampoLinha.addEventListener("change", Produtos);
+    
+    function Produtos(){
+    
+      var Opt = "Escolha um Produto";
+      var Vazio = "SIM";
+      LimparLista(CampoProduto,Opt,Vazio);
+    
+      var Linha = CampoLinha.value;
+    
+      if(Linha == "" || produtos == null){
+        return false;
+      }
+    
+      var lista = produtos.filter(function(value, i, arr){
+        return Linha == arr[i][0];
+      });
+    
+      var listaProdutos = [];
+    
+      for(var i = 0; i < lista.length; i++){
+        listaProdutos.push([lista[i][1]]);
+      }
+    
+      lista.length = 0;
+    
+      listaProdutos.sort();
+    
+      listaProdutos.forEach(function(r){
+    
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(r[0]);
+        NovaOpcao.appendChild(Texto);
+        CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);
+    
+      });
+    
+      listaProdutos.length = 0;
+    
+    }
+    
+    CampoEstado.addEventListener("change", Cidades);
+    
+    function Cidades(){
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "SIM";
+      LimparLista(CampoCidade,Opt,Vazio);
+    
+      var Estado = CampoEstado.value;
+    
+      if(Estado == "" || cidades == null){
+        return false;
+      }
+    
+      var lista = cidades.filter(function(value, i, arr){
+        return Estado == arr[i][0];
+      });
+    
+      var listaCidades = [];
+    
+      for(var i = 0; i < lista.length; i++){
+        listaCidades.push([lista[i][1]]);
+      }
+    
+      lista.length = 0;
+    
+      listaCidades.sort();
+    
+      listaCidades.forEach(function(r){
+    
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(r[0]);
+        NovaOpcao.appendChild(Texto);
+        CampoCidade.insertBefore(NovaOpcao, CampoCidade.lastChild);
+    
+      });
+    
+      listaCidades.length = 0;
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoData1.value = "";
+      CampoData2.value = "";
+      CampoPedido.value = "";
+      CampoLinha.value = "";
+      CampoCliente.value = "";
+      CampoVendedor.value = "";
+      CampoEstado.value = "";
+      CampoStatus.value = "";
+    
+      var Opt = "Escolha um Produto";
+      var Vazio = "SIM";
+      LimparLista(CampoProduto,Opt,Vazio);
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "SIM";
+      LimparLista(CampoCidade,Opt,Vazio);
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      }  
+    
+    }
+    
+    function converteData(Data){
+    
+      var dataQuebrada = Data.split("/");
+      var Dia = dataQuebrada[0];
+      var Mes = dataQuebrada[1];
+      var Ano = dataQuebrada[2];
+      var novaData = new Date(parseInt(Ano, 10), parseInt(Mes, 10) - 1, parseInt(Dia, 10));
+      return novaData;
+    
+    }
+    
+    
+    CampoPedido.addEventListener("keyup", function(e){
+      var Tecla = e.which || e.keyCode;
+      if(Tecla == 13){
+        Filtro();
+      }
+    });
+    
+    
+    document.getElementById("btnFiltrar").addEventListener("click", Filtro);
+    CampoLinha.addEventListener("change", Filtro);
+    CampoProduto.addEventListener("change", Filtro);
+    CampoCliente.addEventListener("change", Filtro);
+    CampoVendedor.addEventListener("change", Filtro);
+    CampoEstado.addEventListener("change", Filtro);
+    CampoCidade.addEventListener("change", Filtro);
+    CampoStatus.addEventListener("change", Filtro);
+    
+    function Filtro(){
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      } 
+    
+      var dataInicial = CampoData1.value;
+    
+      if(dataInicial.length > 0){
+        var dataQuebrada = dataInicial.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataInicial = Dia + "/" + Mes + "/" + Ano;
+      }
+    
+      var dataFinal = CampoData2.value;
+    
+      if(dataFinal.length > 0){
+        var dataQuebrada = dataFinal.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataFinal = Dia + "/" + Mes + "/" + Ano;
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length != 0){
+        var dataInicial = dataFinal;
+      }
+    
+      if(dataInicial.length != 0 && dataFinal.length == 0){
+        var dataFinal = dataInicial;
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length == 0){
+        var dataInicial = "01/01/2020";
+        var dataFinal = "01/01/2050";
+      }
+    
+      var DataInicial = converteData(dataInicial);
+      var DataFinal = converteData(dataFinal); 
+    
+      var Pedido = CampoPedido.value;
+      var Linha = CampoLinha.value;
+      var Produto = CampoProduto.value;
+      var Cliente = CampoCliente.value;
+      var Vendedor = CampoVendedor.value;
+      var Estado = CampoEstado.value;
+      var Cidade = CampoCidade.value;
+      var Status = CampoStatus.value;
+    
+      if(Linha == "Escolha uma Linha"){
+        var Linha = "";
+      } 
+    
+      if(Produto == "Escolha um Produto"){
+        var Produto = "";
+      } 
+    
+      if(Cliente == "Escolha um Cliente"){
+        var Cliente = "";
+      } 
+    
+      if(Vendedor == "Escolha um Vendedor"){
+        var Vendedor = "";
+      } 
+    
+      if(Estado == "Escolha um Estado"){
+        var Estado = "";
+      } 
+    
+      if(Cidade == "Escolha uma Cidade"){
+        var Cidade = "";
+      }
+    
+      if(Status == "Escolha um Status"){
+        var Status = "";
+      }
+    
+      var dadosFiltro = pedidos.filter(function(value, i, arr){
+    
+        var Data = converteData(arr[i][2]);
+    
+        return Data >= DataInicial && Data <= DataFinal &&
+        (Pedido ? Pedido == arr[i][1] : true) &&
+        (Linha ? Linha == arr[i][5] : true) &&
+        (Produto ? Produto == arr[i][6] : true) &&
+        (Cliente ? Cliente == arr[i][10] : true) &&
+        (Vendedor ? Vendedor == arr[i][11] : true) &&
+        (Estado ? Estado == arr[i][12] : true) &&
+        (Cidade ? Cidade == arr[i][13] : true) &&
+        (Status ? Status == arr[i][14] : true);
+    
+      });
+    
+      if(dadosFiltro.length == 0){
+        var m = "NÃO EXISTEM DADOS PARA ESTE FILTRO!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      GerarTabela(dadosFiltro);  
+    
+    }
+    
+    function GerarTabela(Dados){ 
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      var TotalQtd = 0;
+      var TotalValor = 0;
+    
+      Dados.forEach(function(r){
+    
+        if(r[7] > 0){
+    
+          var Linha = document.createElement("tr");
+    
+          var Coluna1 = document.createElement("td");
+          Coluna1.textContent = r[0];
+          var Coluna2 = document.createElement("td");
+          Coluna2.textContent = r[1];
+          var Coluna3 = document.createElement("td");
+          Coluna3.textContent = r[2];
+          var Coluna4 = document.createElement("td");
+          Coluna4.textContent = r[5];
+          var Coluna5 = document.createElement("td");
+          Coluna5.textContent = r[6];
+    
+          var Coluna6 = document.createElement("td");
+          Coluna6.textContent = parseFloat(r[7]).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+          var Coluna7 = document.createElement("td");
+          Coluna7.textContent = parseFloat(r[8]).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+          var Coluna8 = document.createElement("td");
+          Coluna8.textContent = parseFloat(r[9]).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+    
+          var Coluna9 = document.createElement("td");
+          Coluna9.textContent = r[10];
+          var Coluna10 = document.createElement("td");
+          Coluna10.textContent = r[11];
+          var Coluna11 = document.createElement("td");
+          Coluna11.textContent = r[12];
+          var Coluna12 = document.createElement("td");
+          Coluna12.textContent = r[13];
+          var Coluna13 = document.createElement("td");
+          Coluna13.textContent = r[14];
+          var Coluna14 = document.createElement("td");
+          Coluna14.textContent = r[15];
+    
+          Linha.appendChild(Coluna1);
+          Linha.appendChild(Coluna2);
+          Linha.appendChild(Coluna3);
+          Linha.appendChild(Coluna4);
+          Linha.appendChild(Coluna5);
+          Linha.appendChild(Coluna6);
+          Linha.appendChild(Coluna7);
+          Linha.appendChild(Coluna8);
+          Linha.appendChild(Coluna9);
+          Linha.appendChild(Coluna10);
+          Linha.appendChild(Coluna11);
+          Linha.appendChild(Coluna12);
+          Linha.appendChild(Coluna13);
+          Linha.appendChild(Coluna14);
+    
+          CorpoTabela.appendChild(Linha);
+    
+          TotalQtd = parseFloat(TotalQtd) + parseFloat(r[7]);
+          TotalValor = parseFloat(TotalValor) + parseFloat(r[9]);
+    
+        }
+    
+    
+      });
+    
+      TotalQtd = parseFloat(TotalQtd).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+      TotalValor = parseFloat(TotalValor).toLocaleString("pt-BR", {style: "decimal", decimal: "BRL"});
+    
+      var Linha = document.createElement("tr");
+    
+      var Coluna1 = document.createElement("td");
+      Coluna1.textContent = "_";
+      var Coluna2 = document.createElement("td");
+      Coluna2.textContent = "TOTAL";
+      var Coluna3 = document.createElement("td");
+      Coluna3.textContent = "_";
+      var Coluna4 = document.createElement("td");
+      Coluna4.textContent = "_";
+      var Coluna5 = document.createElement("td");
+      Coluna5.textContent = "_";
+      var Coluna6 = document.createElement("td");
+      Coluna6.textContent = TotalQtd;
+      var Coluna7 = document.createElement("td");
+      Coluna7.textContent = "_";
+      var Coluna8 = document.createElement("td");
+      Coluna8.textContent = TotalValor;
+      var Coluna9 = document.createElement("td");
+      Coluna9.textContent = "_";
+      var Coluna10 = document.createElement("td");
+      Coluna10.textContent = "_";
+      var Coluna11 = document.createElement("td");
+      Coluna11.textContent = "_";
+      var Coluna12 = document.createElement("td");
+      Coluna12.textContent = "_";
+      var Coluna13 = document.createElement("td");
+      Coluna13.textContent = "_";
+      var Coluna14 = document.createElement("td");
+      Coluna14.textContent = "_";
+    
+      Linha.appendChild(Coluna1);
+      Linha.appendChild(Coluna2);
+      Linha.appendChild(Coluna3);
+      Linha.appendChild(Coluna4);
+      Linha.appendChild(Coluna5);
+      Linha.appendChild(Coluna6);
+      Linha.appendChild(Coluna7);
+      Linha.appendChild(Coluna8);
+      Linha.appendChild(Coluna9);
+      Linha.appendChild(Coluna10);
+      Linha.appendChild(Coluna11);
+      Linha.appendChild(Coluna12);
+      Linha.appendChild(Coluna13);
+      Linha.appendChild(Coluna14);
+    
+      CorpoTabela.appendChild(Linha); 
+    
+      DCTabela(); 
+    
+    }
+    
+    function sortTable(table, col, reverse) {
+       
+      if(col == 0 || col == 1 || col == 2 || col == 5 || col == 6 || col == 7){
+        return false;
+      }  
+    
+      var tb = table.tBodies[0],  
+        tr = Array.prototype.slice.call(tb.rows, 0),
+        i;  
+    
+      reverse = -((+reverse) || -1);
+    
+      tr = tr.sort(function(a, b) {
+       
+       if(a.cells[col].textContent.trim() != "_"){
+          return reverse * (a.cells[col].textContent.trim()
+          .localeCompare(b.cells[col].textContent.trim()));   
+       }
+    
+      });
+    
+      for (i = 0; i < tr.length; ++i)  tb.appendChild(tr[i]);
+      
+    }
+    
+    function makeSortable(table) {
+    
+      var th = table.tHead,  
+        i;    
+    
+      th && (th = th.rows[0]) && (th = th.cells);
+    
+      if (th) i = th.length;
+    
+      else return;
+    
+      while (--i >= 0)(function(i) {
+        var dir = 1;
+        th[i].addEventListener('click', function() {
+          sortTable(table, i, (dir = 1 - dir))
+        });
+      }(i));
+      
+    }
+    
+    function makeAllSortable(parent) {
+      
+      parent = parent || document.body;
+      var t = parent.getElementsByTagName('table'),
+        i = t.length;     
+    
+      while (--i >= 0) makeSortable(t[i]);
+    }
+    
+    window.onload = function(){
+      makeAllSortable();
+    }
+    
+    document.getElementById("btnPdf").addEventListener("click", GerarPdf);
+    
+    function GerarPdf(){
+    
+      var DivTabela = document.getElementById("divTabela").innerHTML;
+    
+      var style = "<style>";
+      style = style + "table {width: 100%; font: 12px Calibri;}";
+      style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;}";
+      style = style + "padding: 2px 3px; text-align: left;";
+      style = style + "</style>";   
+    
+      var win = window.open("","","height=700,width=900");
+    
+      win.document.write("<html><head>");
+      win.document.write("<title>FILTRO PEDIDOS</title>");
+      win.document.write(style);
+      win.document.write("</head>");
+    
+      win.document.write("<body>");
+      win.document.write(DivTabela);
+      win.document.write("</body></html>");
+    
+      win.document.close();
+    
+      win.print();
+    
+    }
+    
+    $(document).ready(function(){
+    
+      $("#btnExcel").click(function(e){
+    
+        e.preventDefault();
+    
+        var DivTabela = document.getElementById("divTabela"); 
+    
+        var Arquivo = new Blob(["\ufeff" + DivTabela.outerHTML],{type:"application/vnd.ms-excel"});
+    
+        var url = window.URL.createObjectURL(Arquivo);
+    
+        var a = document.createElement("a");
+    
+        a.href = url;
+    
+        a.download = "Dados Filtro Pedidos";
+    
+        a.click();
+    
+      });
+    
+    });
+    
+    
+    function DCTabela(){
+    
+      var linhasTabela = document.querySelectorAll("#Tab tr");
+    
+      linhasTabela.forEach(function(linha){
+    
+        linha.addEventListener("dblclick", function(){
+    
+          this.classList.toggle("selecionada");
+    
+          var Id = this.cells[0].textContent;
+    
+          if(Id != "_" && Id != "ID"){
+            google.script.run.withSuccessHandler().FormPedido(Id);
+          }
+    
+        });
+    
+      });
+    
+    }
+    
+    </script>
+    
