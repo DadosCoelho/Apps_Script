@@ -1,0 +1,275 @@
+<style>
+
+    #corpo{
+      background-color: #F5F5F5;
+    }
+    
+    #divCabecalho{
+      position: fixed;
+      background-color: #228B22;
+      width: 1100px;
+      height: 120px;
+      top: 0px;
+      left: 0px;
+      z-index: 100;
+    }
+    
+    #labelData1{
+      position: absolute;
+      top: 10px;
+      left: 44px;
+    }
+    
+    #data1{
+      position: absolute;
+      width: 103px;
+      height: 21px;
+      top: 30px;
+      left: 20px;
+    }
+    
+    #labelData2{
+      position: absolute;
+      top: 10px;
+      left: 164px;
+    }
+    
+    #data2{
+      position: absolute;
+      width: 103px;
+      height: 21px;
+      top: 30px;
+      left: 136px;  
+    }
+    
+    #labelPedido{
+      position: absolute;
+      top: 10px;
+      left: 280px;
+    }
+    
+    #Pedido{
+      position: absolute;
+      text-align: center;
+      width: 70px;
+      height: 19.5px;
+      top: 30px;
+      left: 260px;
+    }
+    
+    #labelLinha{
+      position: absolute;
+      top: 10px;
+      left: 435px;
+    }
+    
+    #Linha{
+      position: absolute;
+      width: 200px;
+      height: 25px;
+      top: 30px;
+      left: 355px;
+    }
+    
+    #labelProduto{
+      position: absolute;
+      top: 10px;
+      left: 655px;
+    }
+    
+    #Produto{
+      position: absolute;
+      width: 230px;
+      height: 25px;
+      top: 30px;
+      left: 575px;
+    }
+    
+    #labelCliente{
+      position: absolute;
+      top: 10px;
+      left: 915px;
+    }
+    
+    #Cliente{
+      position: absolute;
+      width: 240px;
+      height: 25px;
+      top: 30px;
+      left: 825px;
+    }
+    
+    #labelVendedor{
+      position: absolute;
+      top: 60px;
+      left: 85px;
+    }
+    
+    #Vendedor{
+      position: absolute;
+      width: 200px;
+      height: 25px;
+      top: 80px;
+      left: 20px;
+    }
+    
+    #labelEstado{
+      position: absolute;
+      top: 60px;
+      left: 300px;
+    }
+    
+    #Estado{
+      position: absolute;
+      width: 180px;
+      height: 25px;
+      top: 80px;
+      left: 235px;
+    }
+    
+    #labelCidade{
+      position: absolute;
+      top: 60px;
+      left: 500px;
+    }
+    
+    #Cidade{
+      position: absolute;
+      width: 200px;
+      height: 25px;
+      top: 80px;
+      left: 430px;
+    }
+    
+    #labelStatus{
+      position: absolute;
+      top: 60px;
+      left: 690px;
+    }
+    
+    #Status{
+      position: absolute;
+      width: 135px;
+      height: 25px;
+      top: 80px;
+      left: 645px;  
+    }
+    
+    #btnFiltrar{
+      position: absolute;
+      background-color: #00BFFF;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      width: 65px;
+      height: 25px;
+      top: 80px;
+      left: 790px;
+    }
+    
+    #btnLimpar{
+      position: absolute;
+      background-color: #00FF00;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      width: 60px;
+      height: 25px;
+      top: 80px;
+      left: 865px;
+    }
+    
+    #btnPdf{
+      position: absolute;
+      background-color: #FFFF00;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      width: 60px;
+      height: 25px;
+      top: 80px;
+      left: 935px;
+    }
+    
+    #btnExcel{
+      position: absolute;
+      background-color: #FF4500;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      width: 60px;
+      height: 25px;
+      top: 80px;
+      left: 1005px;
+    }
+    
+    #Tab{
+      position: absolute;  
+      font-size: 12px;
+      top: 120px;
+      left: 0px; 
+      z-index: 0; 
+    }
+    
+    #Tab tr td{
+      cursor: pointer;
+    }
+    
+    #Tab tr:hover td{
+      background-color: orange;
+    }
+    
+    #Tab tr.selecionada td{
+      background-color: yellow;
+    }
+    
+    #Tab thead{
+      position: sticky;
+      background-color: #2F4F4F;
+      color: #FFFFFF;  
+      top: 120px;
+    }
+    
+    #Tab tr:last-child{
+      font-weight: bold;
+      font-size: 15px; 
+    }
+    
+    #CaixaMsg{
+      display: none;
+      position: fixed;
+      background-color: #000;
+      width: 550px;  
+      left: 270px;
+      top: 120px;
+      border-radius: 7px;
+      z-index: 1;
+    }
+    
+    #CaixaMsg > div {
+      background-color: #FFF;
+      margin: 6px; 
+    }
+    
+    #CaixaMsg > div > #TituloMsg{
+      background-color: #FFFF00;
+      font-size: 22px;
+      padding: 10px;
+      color: #000;
+    }
+    
+    #CaixaMsg > div > #CorpoMsg{
+      background-color: #4169E1;
+      font-size: 15px;
+      padding: 15px;
+      color: #FFF;
+      text-align:  center;
+    }
+    
+    #CaixaMsg > div > #RodapeMsg{
+      background-color: #4169E1;
+      padding: 10px;
+      text-align: center;
+    }
+    
+    </style>
