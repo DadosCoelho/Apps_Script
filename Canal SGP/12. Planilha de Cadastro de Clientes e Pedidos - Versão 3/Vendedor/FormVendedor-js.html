@@ -1,0 +1,272 @@
+<script>
+
+    var CampoLista = document.getElementById("ListaVendedor");
+    var CampoNome = document.getElementById("Vendedor");
+    var CampoTel = document.getElementById("Tel");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+    
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var BtnSim = '<button class = "green" onclick = "Excluir()" style = "cursor:pointer">'+
+      '<b><font color = "black" size = "5px">Sim</font></b></button>';
+    
+      var BtnNao = '<button class = "red" onclick = "Fechar()" style = "cursor:pointer">'+
+      '<b><font color = "black" size = "5px">Não</font></b></button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;
+    
+    }
+    
+    function Excluir(){
+    
+      var Vendedor = CampoLista.value;
+    
+      if(Vendedor == "" || Vendedor == "Escolha um Vendedor(a)"){
+        var m = "CANCELADO. CAMPO LISTA NÃO PODE SER VAZIO!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirVendedor(Vendedor);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          Limpar();
+        }
+    
+        var m = r;
+        caixaMsgbox(m);
+    
+      }
+    
+    
+    }
+    
+    function MascaraTelefone(){
+    
+      CampoTel.addEventListener('keyup', function(e){
+    
+        var key = e.keyCode;
+    
+        if(key == 8){
+            return false;
+        }
+    
+        var Tel = CampoTel.value;
+    
+        if(Tel.length == 1){
+          CampoTel.value = "(" + Tel;
+          return true;
+        }
+    
+        if(Tel.length == 3){
+          CampoTel.value =  Tel + ")";
+          return true;
+        }
+    
+        if(Tel.length == 9){
+          CampoTel.value =  Tel + "-";
+          return true;
+        }
+    
+      })
+    
+    }
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoNome.value = "";
+      CampoTel.value = "";
+      M.updateTextFields();
+      CampoLista.value = ""; 
+      AtualizarVendedores(); 
+    
+    }
+    
+    
+    document.getElementById("btnSalvar").addEventListener("click", Salvar);
+    
+    function Salvar(){
+    
+      var Nome = CampoNome.value;
+      var Telefone = CampoTel.value;
+    
+      var Nome = Nome.trim();
+    
+      if(Nome == "" || Telefone == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return;
+      }
+    
+      var Dados = {
+        Nome: Nome,
+        Telefone: Telefone
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarVendedor(Dados);
+    
+      function Retorno(r){
+    
+        if(r == "VENDEDOR JÁ CADASTRADO!"){
+            var m = r;
+            caixaMsgbox(m);
+        }
+    
+        if(r == "REGISTRADO COM SUCESSO!"){
+            var m = r;
+            caixaMsgbox(m);
+            Limpar();
+        }
+    
+      }
+    
+    }
+    
+    
+    function AtualizarVendedores(){
+    
+      while (CampoLista.length){
+          CampoLista.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode("Escolha um Vendedor(a)");
+      NovaOpcao.appendChild(Texto);
+      CampoLista.insertBefore(NovaOpcao,CampoLista.lastChild);
+    
+      CampoLista.options[0].disabled = true;
+    
+      google.script.run.withSuccessHandler(Retorno).AtualizarListaVendedores();
+    
+      function Retorno(vendedores){
+    
+          vendedores.forEach(function(r){
+    
+              var NovaOpcao = document.createElement("option");
+              var Texto = document.createTextNode(r[0]);
+              NovaOpcao.appendChild(Texto);
+              CampoLista.insertBefore(NovaOpcao,CampoLista.lastChild);
+    
+          });
+    
+      }
+    }
+    
+    CampoLista.addEventListener("input", Pesquisar);
+    
+    function Pesquisar(){
+    
+      var NomeVendedor = CampoLista.value;
+    
+      if(NomeVendedor == ""){
+        var m = "SELECIONE NOME NA LISTA PARA PESQUISAR!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).PesquisarVendedor(NomeVendedor);
+    
+      function Retorno(r){
+    
+        if(r == "NÃO ENCONTRADO!"){
+          CampoNome.value = "";
+          CampoTel.value = "";
+          M.updateTextFields();
+          var m = r;
+          caixaMsgbox(m);
+          return false;
+        }
+    
+        CampoNome.value = r[0];
+        CampoTel.value = r[1];
+        M.updateTextFields();
+    
+      }
+    
+    }
+    
+    document.getElementById("btnEditar").addEventListener("click",Editar);
+    
+    function Editar(){
+    
+      var NomeLista = CampoLista.value;
+      var Nome = CampoNome.value;
+      var Telefone = CampoTel.value;
+    
+      var Nome = Nome.trim();
+    
+      if (NomeLista == "Escolha um Vendedor(a)" || NomeLista == ""){
+        var m = "PRECISA ESCOLHER VENDEDOR NA LISTA!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      if(Nome == "" || Telefone == ""){
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      var Dados = {
+        NomeLista: NomeLista,
+        Nome: Nome,
+        Telefone: Telefone
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).EditarVendedor(Dados);
+    
+      function Retorno(r){
+        
+        var m = r;
+        caixaMsgbox(m);
+    
+        if(r != "VENDEDOR NÃO ENCONTRADO!"){
+            Limpar();
+        }
+    
+      }  
+    
+    }
+    
+    </script>
+    
