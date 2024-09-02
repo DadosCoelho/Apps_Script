@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloFormProduto") ?> 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  </head>
+  <body>
+
+   <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+   </div>
+
+    <div id = "divObjetos" class = "row">
+
+      <div id = "divListaLinha">
+
+          <label id = "labelListaLinha">Linha</label>
+          <select id = "listaLinha" class = "browser-default">
+
+            <option value = "" disabled selected>Escolha uma Linha</option>
+            
+            <?for(var i = 0; i<list.length; i++){?>
+                <option><?=list[i];?></option>
+            <?}?>
+            
+          </select>
+
+      </div>
+
+      <div id = "divListaProduto">
+        
+          <label id = "labelListaProduto">Produto</label>
+          <select id = "listaProduto" class = "browser-default">
+
+            <option value = "" disabled selected>Escolha um Produto</option>
+
+          </select>
+
+      </div>
+
+      <div id = "divLinha" class = "input-field col s12">
+          <i id = "iconeLinha" class = "material-icons prefix">add_circle_outline</i>
+          <input id = "nomeLinha" type="text" oninput = "CaixaAlta(event)">
+          <label id = "labelLinha" for = "nomeLinha">Linha</label>
+      </div>
+
+      <div id = "divNomeProduto" class = "input-field col s12">
+          <i id = "iconeProduto" class = "material-icons prefix">add_circle_outline</i>
+          <input id = "nomeProduto" type="text" oninput = "CaixaAlta(event)">
+          <label id = "labelProduto" for = "nomeProduto">Produto</label>
+      </div>
+
+      <div id = "divPreco" class = "input-field col s12">
+          <i id = "iconePreco" class = "material-icons prefix">add_circle_outline</i>
+          <input id = "Preco" type="text">
+          <label id = "labelPreco" for = "Preco">Preço Unid.</label>
+      </div>
+
+      <div id = "divBtn" class = "input-field col s12">
+
+        <button id = "btnLimpar" class = "btn waves-effect waves-ligth blue">LIMPAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnSalvar" class = "btn waves-effect waves-ligth green">SALVAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnEditar" class = "btn waves-effect waves-ligth yellow">EDITAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnExcluir" class = "btn waves-effect waves-ligth red" onclick = "MsgBoxExcluir()">EXCLUIR
+          <i class = "material-icons right">send</i>
+        </button>
+
+      </div>
+      
+    </div>
+       
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <?!=Chamar("FormProduto-js") ?>
+
+  </body>
+</html>
