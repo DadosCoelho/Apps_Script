@@ -1,0 +1,161 @@
+function FormFiltroClientes(Cliente,Cnpj,Contato,Estado,Cidade) {
+
+    var planilha = SpreadsheetApp.getActiveSpreadsheet();
+    var guiaCliente = planilha.getSheetByName("Clientes");
+  
+    var guiaEstado = planilha.getSheetByName("Estados");
+  
+    var ultimaLinha = guiaCliente.getLastRow();
+  
+    if(ultimaLinha == 0){
+      ultimaLinha = 1;
+    }
+  
+    var list1 = guiaCliente.getRange(2, 2, ultimaLinha, 1).getValues();
+  
+    list1.sort();
+  
+    var ultimaLinha = guiaEstado.getLastRow();
+  
+    if(ultimaLinha == 0){
+      ultimaLinha = 1;
+    }
+  
+    var list2 = guiaEstado.getRange(2,1, ultimaLinha,1).getValues();
+  
+    list2.sort(); 
+  
+    var Form = HtmlService.createTemplateFromFile("FormFiltroClientes");
+  
+    Form.list1 = list1.map(function(r){
+      return r[0];
+    });
+  
+    Form.list2 = list2.map(function(r){
+      return r[0];
+    });
+  
+    Form.Cliente = Cliente;
+    Form.Cnpj = Cnpj;
+    Form.Contato = Contato;
+    Form.Estado = Estado;
+    Form.Cidade = Cidade;
+  
+    var MostrarForm = Form.evaluate().setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  
+    MostrarForm.setTitle("FILTRO CLIENTES").setHeight(600).setWidth(1100);
+  
+    SpreadsheetApp.getUi().showModalDialog(MostrarForm,"FILTRO CLIENTES");
+    
+  }
+  
+  function listaCidades(Estado){
+  
+    var planilha = SpreadsheetApp.getActiveSpreadsheet();
+    var guiaEstadosCidades = planilha.getSheetByName("Estados/Cidades");
+  
+    var ultimaLinha = guiaEstadosCidades.getLastRow() - 1;
+  
+    if(ultimaLinha == 0){
+      ultimaLinha = 1;
+    }
+  
+    var dadosCidades = guiaEstadosCidades.getRange(2,1,ultimaLinha,2).getValues();
+  
+    var cidades = [];
+  
+    for(var i = 0; i < dadosCidades.length; i++){
+  
+      if(dadosCidades[i][0] == Estado){
+        var cid = dadosCidades[i][1];
+        cidades.push(cid);
+      }
+  
+    }
+  
+    var b = {};
+  
+    for(var i = 0; i < cidades.length; i++){
+      b[cidades[i]] = cidades[i];
+    }
+  
+    var listaCidades = [];
+  
+    for(var key in b){
+      listaCidades.push([key]);
+    }
+  
+    dadosCidades.length = 0;
+    cidades.length = 0;
+  
+    return listaCidades.sort();
+  
+  }
+  
+  function converteData(Data){
+  
+    var dataQuebrada = Data.split("/");
+    var Ano = dataQuebrada[2];
+    var Mes = dataQuebrada[1];
+    var Dia = dataQuebrada[0];
+    var novaData = new Date(parseInt(Ano, 10), parseInt(Mes, 10) - 1, parseInt(Dia, 10));
+    return  novaData;
+  
+  }
+  
+  function FiltroClientes(criterios){
+  
+    var planilha = SpreadsheetApp.getActiveSpreadsheet();
+    var guiaCliente = planilha.getSheetByName("Clientes");
+  
+    var ultimaLinha = guiaCliente.getLastRow();
+  
+    var dadosClientes = guiaCliente.getRange(2,1,ultimaLinha,9).getValues();
+  
+    var Data1 = Utilities.formatDate(new Date(criterios.data1),planilha.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+  
+    var Data2 = Utilities.formatDate(new Date(criterios.data2),planilha.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+  
+    var DataInicial = converteData(Data1);
+    var DataFinal = converteData(Data2);
+    var Cliente = criterios.Cliente;
+    var Cnpj = criterios.Cnpj;
+    var Contato = criterios.Contato;
+    var Estado = criterios.Estado;
+    var Cidade = criterios.Cidade;
+  
+    var dadosFiltro = dadosClientes.filter(function(value, i, arr){
+  
+      var Data = Utilities.formatDate(new Date(arr[i][0]),planilha.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+  
+      return converteData(Data) >= DataInicial &&
+      converteData(Data) <= DataFinal &&
+      (Cliente ? Cliente == arr[i][1]: true) &&
+      (Cnpj ? Cnpj == arr[i][2]: true) &&
+      (Contato ? Contato == arr[i][3]: true) &&
+      (Estado ? Estado == arr[i][7]: true) &&
+      (Cidade ? Cidade == arr[i][6]: true)
+  
+    });
+  
+    if(dadosFiltro.length == 0){
+      dadosClientes.length = 0;
+      dadosFiltro.length = 0;
+      return "NÃO EXISTEM DADOS PARA ESTE FILTRO!";
+    }
+  
+    dadosClientes.length = 0;
+  
+    for(var i = 0; i < dadosFiltro.length; i++){
+  
+      var Data = Utilities.formatDate(new Date(dadosFiltro[i][0]),planilha.getSpreadsheetTimeZone(), "dd/MM/yyyy");
+  
+      dadosFiltro[i][0] = Data;
+  
+    }
+  
+    return dadosFiltro;
+  
+  }
+  
+  
