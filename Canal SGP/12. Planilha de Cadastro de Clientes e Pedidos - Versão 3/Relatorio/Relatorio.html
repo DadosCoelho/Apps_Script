@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloRelatorio")?>
+
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+    </div>
+
+    <div id = "divCabecalho"> 
+
+    <label id = "labelAno">Ano</label>
+    <select id = "Ano" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Ano</option>
+
+      <option></option>
+      <option>2023</option>
+      <option>2024</option>
+      <option>2025</option>
+      <option>2026</option>
+      <option>2027</option>
+      <option>2028</option>
+      <option>2029</option>
+      <option>2030</option>
+      <option>2031</option>
+      <option>2032</option>
+      <option>2033</option>
+
+    </select>
+
+    <label id = "labelMes">Mês</label>
+    <select id = "Mes" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Mês</option>
+
+      <option></option>
+      <option>JANEIRO</option>
+      <option>FEVEREIRO</option>
+      <option>MARÇO</option>
+      <option>ABRIL</option>
+      <option>MAIO</option>
+      <option>JUNHO</option>
+      <option>JULHO</option>
+      <option>AGOSTO</option>
+      <option>SETEMBRO</option>
+      <option>OUTUBRO</option>
+      <option>NOVEMBRO</option>
+      <option>DEZEMBRO</option>
+
+    </select>
+
+    <label id = "labelLinha">Linha</label>
+    <select id = "Linha" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma Linha</option>
+
+      <?for(var i = 0; i < list1.length; i++){?>
+
+        <option><?=list1[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelProduto">Produto</label>
+    <select id = "Produto" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Produto</option>
+
+    </select>
+
+    <label id = "labelCliente">Cliente</label>
+    <select id = "Cliente" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Cliente</option>
+
+      <?for(var i = 0; i < list2.length; i++){?>
+
+        <option><?=list2[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelVendedor">Vendedor</label>
+    <select id = "Vendedor" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Vendedor</option>
+
+      <?for(var i = 0; i < list3.length; i++){?>
+
+        <option><?=list3[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelEstado">Estado</label>
+    <select id = "Estado" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Estado</option>
+
+      <?for(var i = 0; i < list4.length; i++){?>
+
+        <option><?=list4[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelCidade">Cidade</label>
+    <select id = "Cidade" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma Cidade</option>
+
+    </select>
+
+    <label id = "labelStatus">Status</label>
+    <select id = "Status" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Status</option>
+
+      <option></option>
+      <option>FINALIZADO</option>
+      <option>PENDENTE</option>
+
+    </select>
+
+    <label id = "labelQtd">Total Qtd</label>
+    <div id = "divQtd"></div>
+
+    <label id = "labelRs">Total R$</label>
+    <div id = "divRs"></div>
+
+    <button id = "btnLimpar">LIMPAR</button>
+    <button id = "btnPdf">PDF</button>
+    <button id = "btnExcel">EXCEL</button>
+
+    </div>
+
+    <div id = "divTabela">
+
+      <table id = "Tab" width = "100%" border = "1px" cellpadding = "1px">
+
+        <thead>
+          <tr>
+            <th>LINHA</th>
+            <th>PRODUTO</th>
+            <th>QTD</th>
+            <th>VALOR</th>             
+          </tr>
+        </thead>
+
+        <tbody id = "CorpoTabela">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+    
+    <?!=Chamar("Relatorio-js")?>
+
+  </body>
+</html>
