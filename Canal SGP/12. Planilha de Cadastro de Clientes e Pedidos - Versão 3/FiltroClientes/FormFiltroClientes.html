@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloFiltroClientes")?>
+
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+    </div>
+
+    <div id = "divCabecalho">    
+
+    <label id = "labelData1">Data Inic.</label>
+    <input id = "data1" type = "date">
+
+    <label id = "labelData2">Data Fin.</label>
+    <input id = "data2" type = "date">
+
+    <label id = "labelCliente">Cliente</label>
+    <select id = "listaCliente" class = "browser-default">
+
+      <option value = "<?=Cliente?>" disabled selected>Escolha um Cliente</option>
+
+      <? for(var i = 0;i <list1.length; i++){?>
+
+        <option><?=list1[i];?></option>
+
+      <?}?>
+
+    </select>  
+
+    <label id = "labelCnpj">CNPJ</label>
+    <input id = "Cnpj" value = "<?=Cnpj?>" type = "text" maxlength = "18" value = "">
+
+    <label id = "labelContato">Contato</label>
+    <input id = "Contato" value = "<?=Contato?>"  type = "text" maxlength = "14" value = "">
+
+
+    <label id = "labelEstado">Estado</label>
+    <select id = "listaEstado" class = "browser-default">
+
+      <option value = "<?=Estado?>" disabled selected>Escolha um Estado</option>
+
+      <? for(var i = 0;i <list2.length; i++){?>
+
+        <option><?=list2[i];?></option>
+
+      <?}?>
+
+    </select> 
+
+    <label id = "labelCidade">Cidade</label>
+    <select id = "listaCidade" class = "browser-default">
+
+      <option value = "<?=Cidade?>" disabled selected>Escolha uma Cidade</option>      
+
+    </select>
+
+   <button id = "btnFiltrar">FILTRAR</button>
+   <button id = "btnLimpar">LIMPAR</button>
+   <button id = "btnPdf">PDF</button>
+   <button id = "btnExcel">EXCEL</button>
+
+    </div>     
+
+   <div id = "divTabela">
+
+     <table id = "Tab" width = "100%" border = "1px" cellpadding = "1px">
+
+       <thead>
+         <tr>
+           <th width="6%">DATA</th>
+           <th width="14%">CLIENTE</th>
+           <th width="10%">CNPJ</th>
+           <th width="9%">CONTATO</th>
+           <th width="12%">RUA</th>
+           <th width="12%">BAIRRO</th>
+           <th width="12%">CIDADE</th>
+           <th width="13%">ESTADO</th>
+           <th width="12%">OBSERVAÇÃO</th>
+         </tr>
+       </thead>
+
+       <tbody id = "CorpoTabela">
+
+       </tbody>
+
+     </table>
+
+   </div>      
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+  <?!=Chamar("FormFiltroClientes-js")?>
+
+  </body>
+</html>
