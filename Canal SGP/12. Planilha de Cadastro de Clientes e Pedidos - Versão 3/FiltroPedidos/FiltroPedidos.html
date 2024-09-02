@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <?!=Chamar("EstiloFiltroPedidos")?>
+
+  </head>
+  <body id = "corpo">
+
+    <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+    </div> 
+
+    <div id = "divCabecalho"> 
+
+    <label id = "labelData1">Data Inic.</label>
+    <input id = "data1" type = "date">
+
+    <label id = "labelData2">Data Fin.</label>
+    <input id = "data2" type = "date">
+
+    <label id = "labelPedido">Pedido</label>
+    <input id = "Pedido" type = "text">
+
+    <label id = "labelLinha">Linha</label>
+    <select id = "Linha" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma Linha</option>
+
+      <?for(var i = 0; i < list1.length; i++){?>
+
+        <option><?=list1[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelProduto">Produto</label>
+    <select id = "Produto" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Produto</option>
+
+    </select>
+
+    <label id = "labelCliente">Cliente</label>
+    <select id = "Cliente" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Cliente</option>
+
+      <?for(var i = 0; i < list2.length; i++){?>
+
+        <option><?=list2[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelVendedor">Vendedor</label>
+    <select id = "Vendedor" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Vendedor</option>
+
+      <?for(var i = 0; i < list3.length; i++){?>
+
+        <option><?=list3[i];?></option>
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelEstado">Estado</label>
+    <select id = "Estado" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Estado</option>
+
+      <?for(var i = 0; i < list4.length; i++){?>
+
+        <option><?=list4[i];?></option> 
+
+      <?}?>
+
+    </select>
+
+    <label id = "labelCidade">Cidade</label>
+    <select id = "Cidade" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha uma Cidade</option>
+
+    </select>
+
+    <label id = "labelStatus">Status</label>
+    <select id = "Status" class = "browser-default">
+
+      <option value = "" disabled selected>Escolha um Status</option>
+
+      <option></option>
+      <option>FINALIZADO</option>
+      <option>PENDENTE</option>
+
+    </select>
+
+    <button id = "btnFiltrar">FILTRAR</button>
+    <button id = "btnLimpar">LIMPAR</button>
+    <button id = "btnPdf">PDF</button>
+    <button id = "btnExcel">EXCEL</button>
+
+    </div>
+
+    <div id = "divTabela">
+
+        <table id = "Tab" width = "100%" border = "1px" cellpadding = "1px">
+
+          <thead>
+              <tr>
+                <th>ID</th>
+                <th>PED.</th>
+                <th>DATA</th>
+                <th>LINHA</th>
+                <th>PRODUTO</th>
+                <th>QTD</th>
+                <th>P. U.</th>
+                <th>TOTAL</th>
+                <th>CLIENTE</th>
+                <th>VENDEDOR</th>
+                <th>ESTADO</th>
+                <th>CIDADE</th>
+                <th>STATUS</th>
+                <th>OBSERVAÇÃO</th>
+              </tr>
+          </thead>
+
+          <tbody id = "CorpoTabela">
+
+          </tbody>
+
+        </table>
+
+    </div> 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>   
+
+    <?!=Chamar("FiltroPedidos-js")?>
+
+  </body>
+</html>
