@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">    
+
+    <?!=Chamar("EstiloFormVendedor") ?> 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  </head>
+  <body>
+
+   <div id = "CaixaMsg">
+     <div>
+       <div id = "TituloMsg"></div>
+       <div id = "CorpoMsg"></div>
+       <div id = "RodapeMsg"></div> 
+     </div>
+   </div>
+
+    <div id = "divObjetos" class = "row">
+    
+      <div id = "divLista">
+
+         <label id = "labelListaVendedor">LISTA</label>
+         <select id = "ListaVendedor" class = "browser-default">
+
+            <option value = "" disabled selected>Escolha um Vendedor(a)</option>
+
+            <? for(var i = 0; i<list.length; i++){ ?>
+                <option><?=list[i];?></option>
+            <? } ?>
+
+         </select>
+         
+      </div> 
+
+      <div id = "divVendedor" class = "input-field col s12">
+          <i id = "iconeVendedor" class = "material-icons prefix">account_circle</i>
+          <input id = "Vendedor" type="text" class= "validate" oninput = "CaixaAlta(event)">
+          <label id = "labelVendedor" for = "Vendedor">Nome</label>
+      </div>
+
+      <div id = "divTelefone" class = "input-field col s12">
+          <i id = "iconeTelefone" class = "material-icons prefix">phone</i>
+          <input id = "Tel" type = "text" maxlength = "14" oninput = "MascaraTelefone(this)">
+          <label id = "labelTelefone" for = "Tel">Telefone</label>
+      </div>
+
+      <div id = "divBtn" class = "input-field col s12">
+
+        <button id = "btnLimpar" class = "btn waves-effect waves-ligth blue">LIMPAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnSalvar" class = "btn waves-effect waves-ligth green">SALVAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnEditar" class = "btn waves-effect waves-ligth yellow">EDITAR
+          <i class = "material-icons right">send</i>
+        </button>
+
+        <button id = "btnExcluir" class = "btn waves-effect waves-ligth red" onclick = "MsgBoxExcluir()">EXCLUIR
+          <i class = "material-icons right">send</i>
+        </button>
+
+      </div>
+
+    </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <?!=Chamar("FormVendedor-js") ?>
+
+  </body>
+</html>
