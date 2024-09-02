@@ -1,0 +1,636 @@
+<script>
+
+    var CampoCliente = document.getElementById("listaCliente");
+    var CampoEstado = document.getElementById("listaEstado");
+    var CampoCidade = document.getElementById("listaCidade");
+    var CampoLinha = document.getElementById("listaLinha");
+    var CampoProduto = document.getElementById("listaProduto");
+    var CampoVendedor = document.getElementById("listaVendedor");
+    var CampoPedido = document.getElementById("Pedido");
+    var CampoId = document.getElementById("Id");
+    var CampoData = document.getElementById("Data");
+    var CampoPreco = document.getElementById("Preco");
+    var CampoQtd = document.getElementById("Qtd");
+    var CampoTotal = document.getElementById("Total");
+    var CampoStatus = document.getElementById("listaStatus");
+    var CampoObs = document.getElementById("Obs");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+    
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    document.addEventListener("DOMContentLoaded", IniciarFormulario);
+    
+    var cidades;
+    var clientes;
+    var produtos;
+    
+    function IniciarFormulario(){
+    
+      google.script.run.withSuccessHandler(Retorno).buscaListas();
+    
+      function Retorno(arrays){
+        cidades = arrays.dadosCidades.slice();
+        clientes = arrays.dadosClientes.slice();
+        produtos = arrays.dadosProdutos.slice();
+    
+        if(CampoId.value != ""){
+          Pesquisar();
+        }
+    
+      } 
+      
+    }
+    
+    function LimparLista(Campo,Opt,Vazio){
+    
+      while(Campo.length){
+        Campo.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode(Opt);
+      NovaOpcao.appendChild(Texto);
+      Campo.insertBefore(NovaOpcao, Campo.lastChild);
+    
+      if(Vazio == "SIM"){
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(" ");
+        NovaOpcao.appendChild(Texto);
+        Campo.insertBefore(NovaOpcao, Campo.lastChild);
+      }
+    
+      Campo.options[0].disabled = true;
+    
+    }
+    
+    CampoEstado.addEventListener("change", CarregarCidades);
+    
+    function CarregarCidades(){
+    
+      var Estado = CampoEstado.value;
+      var Cidade = "";
+      Cidades(Estado,Cidade);
+    
+    }
+    
+    function Cidades(Estado,Cidade){
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "NÃO";
+      LimparLista(CampoCidade,Opt,Vazio);  
+    
+      if(Estado == "" || cidades == null){
+        return false;
+      }
+    
+      var lista = cidades.filter(function(value, i, arr){
+        return (Estado ? Estado == arr[i][0]: true);
+      });
+    
+      var listaCidades = [];
+    
+      for(var i = 0; i < lista.length; i++){
+        listaCidades.push([lista[i][1]]);
+      }
+    
+      lista.length = 0;
+    
+      listaCidades.sort();
+    
+      listaCidades.forEach(function(r){
+    
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(r[0]);
+        NovaOpcao.appendChild(Texto);
+        CampoCidade.insertBefore(NovaOpcao, CampoCidade.lastChild);
+    
+        if(Cidade == r[0]){
+          CampoCidade.value = Cidade;
+        }
+    
+      });
+    
+      if(listaCidades.length == 1){
+        CampoCidade.options[1].selected = true;
+      }
+    
+      listaCidades.length = 0; 
+    
+    }
+    
+    CampoCliente.addEventListener("change", SelectCliente);
+    
+    function SelectCliente(){
+    
+      SelecionarEstadoCidade();
+      NovoPedidoId();
+    
+    }
+    
+    function SelecionarEstadoCidade(){
+    
+      var Cliente = CampoCliente.value;
+    
+      if(Cliente == ""){
+        CampoEstado.value = "";
+        var Opt = "Escolha uma Cidade";
+        var Vazio = "NÃO";
+        LimparLista(CampoCidade,Opt,Vazio);
+        return false;
+      }
+    
+      var filtro = clientes.filter(function(value, i, arr){
+        return Cliente == arr[i][0];
+      });
+    
+      if(filtro.length == 0){
+        CampoEstado.value = "";
+        var Opt = "Escolha uma Cidade";
+        var Vazio = "NÃO";
+        LimparLista(CampoCidade,Opt,Vazio);
+        return false;
+      }
+    
+      CampoEstado.value = filtro[0][6];
+    
+      var Cidade = filtro[0][5];
+    
+      setTimeout(function(){
+        Cidades();
+      }, 1000);
+      
+      setTimeout(function(){
+       CampoCidade.value = Cidade;
+      }, 1000);
+    
+      filtro.length = 0;  
+    
+    }
+    
+    CampoLinha.addEventListener("change", CarregarProdutos);
+    
+    function CarregarProdutos(){
+    
+      var Linha = CampoLinha.value; 
+      var Produto = "";
+      Produtos(Linha,Produto);
+    
+    }
+    
+    function Produtos(Linha,Produto){
+    
+      var Opt = "Escolha um Produto";
+      var Vazio = "NÃO";
+      LimparLista(CampoProduto,Opt,Vazio); 
+      CampoPreco.value = "";  
+    
+      if(Linha == "" || produtos == null){
+        return false;
+      }
+    
+      var lista = produtos.filter(function(value, i, arr){
+        return Linha == arr[i][0];
+      });
+    
+      var listaProdutos = [];
+    
+      for(var i = 0; i < lista.length; i++){
+        listaProdutos.push([lista[i][1]]);
+      }
+    
+      lista.length = 0;
+    
+      listaProdutos.sort();
+    
+      listaProdutos.forEach(function(r){
+    
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(r[0]);
+        NovaOpcao.appendChild(Texto);
+        CampoProduto.insertBefore(NovaOpcao, CampoProduto.lastChild);
+    
+        if(Produto == r[0]){
+          CampoProduto.value = Produto;
+        }    
+    
+      });
+    
+      if(listaProdutos.length == 1){
+        CampoProduto.options[1].selected = true;
+        BuscarPreco();
+      }
+    
+      listaProdutos.length = 0;
+    
+    }
+    
+    CampoProduto.addEventListener("change", BuscarPreco);
+    
+    function BuscarPreco(){
+    
+      var Linha = CampoLinha.value;
+      var Produto = CampoProduto.value;
+    
+      if(Linha == "" || Produto == ""){
+        return false;
+      }
+    
+      var filtro = produtos.filter(function(value, i, arr){
+        return Linha == arr[i][0] && Produto == arr[i][1];
+      });  
+    
+      if(filtro.length > 0){
+        CampoPreco.value = filtro[0][2];
+        M.updateTextFields();   
+      }
+    
+    }
+    
+    function NovoPedidoId(){
+    
+      if(CampoPedido.value != "" && CampoId.value != ""){
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).buscaPedidoId();
+    
+      function Retorno(r){
+    
+        if(CampoPedido.value == ""){
+          CampoPedido.value = r.novoPedido;
+        }
+    
+        if(CampoId.value == ""){
+          CampoId.value = r.novoId;
+          CampoId.disabled = true;
+        }
+    
+        M.updateTextFields();
+    
+      }
+    
+    }
+    
+    function CaixaAlta(e){
+    
+      var ss = e.target.selectionStart;
+      var se = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.selectionStart = ss;
+      e.target.selectionEnd = se;
+    
+    }
+    
+    CampoPreco.addEventListener("input", Total);
+    CampoQtd.addEventListener("input", Total);
+    
+    function Total(){
+    
+      CampoTotal.value = "";
+      M.updateTextFields();
+    
+      var Preco = CampoPreco.value;
+      var Qtd = CampoQtd.value;
+    
+      if(Preco == "" || Qtd == ""){
+        return false;
+      }
+    
+      var ConvertPreco = parseFloat(Preco.replace(/\,/g,'.'));
+      var ConvertQtd = parseFloat(Qtd.replace(/\,/g,'.'));
+    
+      var Total = parseFloat(ConvertPreco * ConvertQtd).toFixed(2);
+    
+      CampoTotal.value = Total.replace(/\./g,',');
+    
+      M.updateTextFields();
+    
+    }
+    
+    function Limpar(){
+    
+      CampoCliente.value = "";
+      CampoEstado.value = "";  
+      CampoLinha.value = "";  
+      CampoVendedor.value = "";
+      CampoId.value = "";
+      CampoData.value = new Date().toISOString().substring(0, 10);
+      CampoQtd.value = "";
+      CampoPreco.value = "";
+      CampoTotal.value = "";
+      CampoStatus.value = "";
+      CampoObs.value = "";
+      CampoPedido.disabled = false;
+      CampoId.disabled = false;
+      document.getElementById("btnSalvar").disabled = false;
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "NÃO";
+      LimparLista(CampoCidade,Opt,Vazio);
+    
+      var Opt = "Escolha um Produto";
+      var Vazio = "NÃO";
+      LimparLista(CampoProduto,Opt,Vazio);  
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", LimparTudo);
+    
+    function LimparTudo(){
+    
+      Limpar();
+      CampoPedido.value = "";  
+    
+    }
+    
+    document.getElementById("btnSalvar").addEventListener("click", Salvar);
+    
+    function Salvar(){
+    
+      var Cliente = CampoCliente.value;
+      var Estado = CampoEstado.value;
+      var Cidade = CampoCidade.value;
+      var Linha = CampoLinha.value;
+      var Produto = CampoProduto.value;
+      var Vendedor = CampoVendedor.value;
+      var Data = CampoData.value;
+      var Id = CampoId.value;
+      var Pedido = CampoPedido.value;
+    
+      var Q = CampoQtd.value;
+      var Qtd = Q.replace(/\./g, ',');
+    
+      var P = CampoPreco.value;
+      var Preco = P.replace(/\./g, ',');
+    
+      var Total = CampoTotal.value;
+      var Status = CampoStatus.value;
+      var Obs = CampoObs.value;
+    
+      if(Cliente == "Escolha um Cliente" || Estado == "Escolha um Estado" || 
+       Cidade == "Escolha uma Cidade" || Linha == "Escolha uma Linha" || 
+       Produto == "Escolha um Produto" || Vendedor == "Escolha um Vendedor(a)" ||
+       Status == "Escolha um Status"){
+    
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return false;
+    
+      }
+    
+      if(Cliente == "" || Estado == "" || Cidade == "" || Linha == "" ||
+      Produto == "" || Vendedor == "" || Data == "" || Id == "" || Pedido == "" ||
+      Qtd == "" || Preco == "" || Status == ""){
+    
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return false;
+    
+      }
+    
+      if(Data.length > 0){
+        var dataQuebrada = Data.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var Data = Ano + "/" + Mes + "/" + Dia;
+      }
+    
+      var Dados = {
+        Id: Id,
+        Pedido: Pedido,
+        Data: Data,
+        Linha: Linha,
+        Produto: Produto,
+        Qtd: Qtd,
+        Preco: Preco,
+        Total: Total,
+        Cliente: Cliente,
+        Vendedor: Vendedor,
+        Estado: Estado,
+        Cidade: Cidade,
+        Status: Status,
+        Obs: Obs,
+      };
+    
+      google.script.run.withSuccessHandler(Retorno).SalvarPedido(Dados);
+    
+      function Retorno(r){
+        var m = r;
+        caixaMsgbox(m);
+        Limpar();
+      }
+    
+    }
+    
+    document.getElementById("btnPesquisar").addEventListener("click", Pesquisar);
+    
+    function Pesquisar(){
+    
+      var Id = CampoId.value;
+    
+      if(Id == ""){
+        var m = "INFORME ID PARA PESQUISA!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).PesquisarPedido(Id);
+    
+      function Retorno(r){
+    
+        if(r == "ID NÃO ENCONTRADO!"){
+          LimparTudo();
+          var m = r;
+          caixaMsgbox(m);
+          return false;
+        }
+    
+        document.getElementById("btnSalvar").disabled = true;
+        CampoId.disabled = true;
+    
+        CampoPedido.value = r[0];
+        CampoData.value = new Date(r[1]).toISOString().substring(0,10);
+        CampoLinha.value = r[2];
+    
+        var Linha = r[2];
+        var Produto = r[3];
+        Produtos(Linha,Produto);
+    
+        CampoQtd.value = r[4];
+        CampoPreco.value = r[5];
+        CampoTotal.value = r[6];
+        CampoCliente.value = r[7];
+        CampoVendedor.value = r[8];
+        CampoEstado.value = r[9];
+    
+        var Estado = r[9];
+        var Cidade = r[10];
+        Cidades(Estado,Cidade);
+    
+        CampoStatus.value = r[11];
+        CampoObs.value = r[12];
+    
+        M.updateTextFields();
+    
+      }
+    
+    }
+    
+    document.getElementById("btnEditar").addEventListener("click", Editar);
+    
+    function Editar(){
+    
+      var Cliente = CampoCliente.value;
+      var Estado = CampoEstado.value;
+      var Cidade = CampoCidade.value;
+      var Linha = CampoLinha.value;
+      var Produto = CampoProduto.value;
+      var Vendedor = CampoVendedor.value;
+      var Data = CampoData.value;
+      var Id = CampoId.value;
+      var Pedido = CampoPedido.value;
+    
+      var Q = CampoQtd.value;
+      var Qtd = Q.replace(/\./g, ',');
+    
+      var P = CampoPreco.value;
+      var Preco = P.replace(/\./g, ',');
+    
+      var Total = CampoTotal.value;
+      var Status = CampoStatus.value;
+      var Obs = CampoObs.value;
+    
+      if(Cliente == "Escolha um Cliente" || Estado == "Escolha um Estado" || 
+       Cidade == "Escolha uma Cidade" || Linha == "Escolha uma Linha" || 
+       Produto == "Escolha um Produto" || Vendedor == "Escolha um Vendedor(a)" ||
+       Status == "Escolha um Status"){
+    
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return false;
+    
+      }
+    
+      if(Cliente == "" || Estado == "" || Cidade == "" || Linha == "" ||
+      Produto == "" || Vendedor == "" || Data == "" || Id == "" || Pedido == "" ||
+      Qtd == "" || Preco == "" || Status == ""){
+    
+        var m = "PRECISA PREENCHER TODOS OS CAMPOS!";
+        caixaMsgbox(m);
+        return false;
+    
+      }
+    
+      if(Data.length > 0){
+        var dataQuebrada = Data.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var Data = Ano + "/" + Mes + "/" + Dia;
+      }
+    
+      var Dados = {
+        Id: Id,
+        Pedido: Pedido,
+        Data: Data,
+        Linha: Linha,
+        Produto: Produto,
+        Qtd: Qtd,
+        Preco: Preco,
+        Total: Total,
+        Cliente: Cliente,
+        Vendedor: Vendedor,
+        Estado: Estado,
+        Cidade: Cidade,
+        Status: Status,
+        Obs: Obs,
+      };
+    
+      google.script.run.withSuccessHandler(Retorno).EditarPedido(Dados);
+    
+      function Retorno(r){
+        
+        if(r == "EDITADO COM SUCESSO!"){
+          LimparTudo();
+        }
+        
+        var m = r;
+        caixaMsgbox(m);
+       
+      }
+    
+    }
+    
+    document.getElementById("btnExcluir").addEventListener("click", MsgBoxExcluir);
+    
+    function MsgBoxExcluir(){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+    
+      var BtnSim = '<button class = "green" onclick = "Excluir()" style = "cursor:pointer">'+
+      '<b><font color = "black" size = "5px">Sim</font></b></button>';
+    
+      var BtnNao = '<button class = "red" onclick = "Fechar()" style = "cursor:pointer">'+
+      '<b><font color = "black" size = "5px">Não</font></b></button>';
+    
+      RodapeMsg.innerHTML = BtnSim + BtnNao;
+    
+    }
+    
+    function Excluir(){
+    
+      var Id = CampoId.value;
+    
+      if(Id == ""){
+        var m = "PRECISA ID PARA EXCLUIR!";
+        caixaMsgbox(m);
+        return false;
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).ExcluirPedido(Id);
+    
+      function Retorno(r){
+    
+        if(r == "EXCLUÍDO COM SUCESSO!"){
+          LimparTudo();
+        }
+    
+        var m = r;
+        caixaMsgbox(m);
+    
+      }
+    
+    }
+    
+    document.getElementById("iconeId").addEventListener("click", FormFiltro);
+    
+    function FormFiltro(){
+    
+      google.script.run.withSuccessHandler().FormFiltroPedidos();
+    
+    }
+    
+    </script>
+    
