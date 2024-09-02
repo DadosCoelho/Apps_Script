@@ -1,0 +1,496 @@
+<script>
+
+    var CampoData1 = document.getElementById("data1");
+    var CampoData2 = document.getElementById("data2");
+    var CampoCliente = document.getElementById("listaCliente");
+    var CampoCnpj = document.getElementById("Cnpj");
+    var CampoContato = document.getElementById("Contato");
+    var CampoEstado = document.getElementById("listaEstado");
+    var CampoCidade = document.getElementById("listaCidade");
+    
+    var CaixaMsg = document.getElementById("CaixaMsg");
+    var TituloMsg = document.getElementById("TituloMsg");
+    var CorpoMsg = document.getElementById("CorpoMsg");
+    var RodapeMsg = document.getElementById("RodapeMsg");
+    
+    var BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+    
+    function caixaMsgbox(m){
+    
+      CaixaMsg.style.display = "block";
+      TituloMsg.innerHTML = "AVISO";
+      CorpoMsg.innerHTML = m; 
+    
+      RodapeMsg.innerHTML = BtnFechar;
+    
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+    
+    CampoCnpj.addEventListener('keyup',MascaraCnpj);
+    
+    function MascaraCnpj(e){
+    
+      var Tecla = e.keyCode;
+    
+      if(Tecla == 8){
+        return false;
+      }
+    
+      var CNPJ = CampoCnpj.value;
+    
+      if(CNPJ.length == 2){
+        CampoCnpj.value = CNPJ + ".";
+        return true;
+      }
+    
+      if(CNPJ.length == 6){
+        CampoCnpj.value = CNPJ + ".";
+        return true;
+      }
+    
+      if(CNPJ.length == 10){
+        CampoCnpj.value = CNPJ + "/";
+        return true;
+      }
+    
+      if(CNPJ.length == 15){
+        CampoCnpj.value = CNPJ + "-";
+        return true;
+      }
+    
+    }
+    
+    CampoContato.addEventListener('keyup',MascaraTelefone);
+    
+    function MascaraTelefone(e){
+    
+      var Tecla = e.keyCode;
+    
+      if(Tecla == 8){
+        return false;
+      }
+    
+      var Telefone = CampoContato.value;
+    
+      if(Telefone.length == 1){
+        CampoContato.value = "(" + Telefone;
+        return true;
+      }
+    
+      if(Telefone.length == 3){
+        CampoContato.value =  Telefone + ")";
+        return true;
+      }
+    
+      if(Telefone.length == 9){
+        CampoContato.value =  Telefone + "-";
+        return true;
+      }
+    
+    
+    }
+    
+    function LimparLista(Campo,Opt,Vazio){
+    
+      while(Campo.length){
+        Campo.remove(0);
+      }
+    
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode(Opt);
+      NovaOpcao.appendChild(Texto);
+      Campo.insertBefore(NovaOpcao, Campo.lastChild);
+    
+      if(Vazio == "SIM"){
+        var NovaOpcao = document.createElement("option");
+        var Texto = document.createTextNode(" ");
+        NovaOpcao.appendChild(Texto);
+        Campo.insertBefore(NovaOpcao, Campo.lastChild);
+      }
+    
+      Campo.options[0].disabled = true;
+    
+    }
+    
+    CampoEstado.addEventListener("change", Cidades);
+    
+    function Cidades(){
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "SIM";
+      LimparLista(CampoCidade,Opt,Vazio);
+    
+      var Estado = CampoEstado.value;
+    
+      google.script.run.withSuccessHandler(Retorno).listaCidades(Estado);
+    
+      function Retorno(Cidades){
+    
+        Cidades.forEach(function(r){
+    
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(r[0]);
+          NovaOpcao.appendChild(Texto);
+          CampoCidade.insertBefore(NovaOpcao, CampoCidade.lastChild);
+    
+        });
+    
+      }
+    
+    }
+    
+    CampoCnpj.addEventListener("keyup",function(e){
+      var Tecla = e.which || e.keyCode;
+      if(Tecla == 13){
+        Filtro();
+      }
+    });
+    
+    CampoContato.addEventListener("keyup",function(e){
+      var Tecla = e.which || e.keyCode;
+      if(Tecla == 13){
+        Filtro();
+      }
+    });
+    
+    document.getElementById("btnFiltrar").addEventListener("click", Filtro);
+    document.addEventListener("DOMContentLoaded", Filtro);
+    CampoCliente.addEventListener("change",Filtro);
+    CampoEstado.addEventListener("change",Filtro);
+    CampoCidade.addEventListener("change",Filtro);
+    
+    function Filtro(){
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      }
+    
+      var dataInicial = CampoData1.value;
+    
+      if(dataInicial.length > 0){
+        var dataQuebrada = dataInicial.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataInicial = Ano + "/" + Mes + "/" + Dia;
+      }
+    
+      var dataFinal = CampoData2.value;
+    
+      if(dataFinal.length > 0){
+        var dataQuebrada = dataFinal.split("-");
+        var Ano = dataQuebrada[0];
+        var Mes = dataQuebrada[1];
+        var Dia = dataQuebrada[2];
+        var dataFinal = Ano + "/" + Mes + "/" + Dia;
+      }
+    
+      var Cliente = CampoCliente.value;
+      var Cnpj = CampoCnpj.value;
+      var Contato = CampoContato.value;
+      var Estado = CampoEstado.value;
+      var Cidade = CampoCidade.value;
+    
+      if (Cliente == "Escolha um Cliente"){
+        var Cliente = "";
+      }
+    
+      if (Estado == "Escolha um Estado"){
+        var Estado = "";
+      }
+    
+      if (Cidade == "Escolha uma Cidade"){
+        var Cidade = "";
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length != 0){
+        var dataInicial = dataFinal;
+      }
+    
+      if(dataInicial.length != 0 && dataFinal.length == 0){
+        var dataFinal = dataInicial;
+      }
+    
+      if(dataInicial.length == 0 && dataFinal.length == 0){
+        var dataInicial = "2020/01/01";
+        var dataFinal = "2050/01/01";
+      }
+    
+      var criterios = {
+        data1: dataInicial,
+        data2: dataFinal,
+        Cliente: Cliente,
+        Cnpj: Cnpj,
+        Contato: Contato,
+        Estado: Estado,
+        Cidade: Cidade,
+      }
+    
+      google.script.run.withSuccessHandler(Retorno).FiltroClientes(criterios);
+    
+      function Retorno(Dados){
+    
+        if(Dados == "NÃO EXISTEM DADOS PARA ESTE FILTRO!"){
+          var m = Dados;
+          caixaMsgbox(m);
+          return false;
+        }
+    
+        var CorpoTabela = document.getElementById("CorpoTabela");
+    
+        Dados.forEach(function(r){
+    
+          var Coluna1 = document.createElement("td");
+          Coluna1.textContent = r[0];
+          var Coluna2 = document.createElement("td");
+          Coluna2.textContent = r[1];
+          var Coluna3 = document.createElement("td");
+          Coluna3.textContent = r[2];
+          var Coluna4 = document.createElement("td");
+          Coluna4.textContent = r[3];
+          var Coluna5 = document.createElement("td");
+          Coluna5.textContent = r[4];
+          var Coluna6 = document.createElement("td");
+          Coluna6.textContent = r[5];
+          var Coluna7 = document.createElement("td");
+          Coluna7.textContent = r[6];
+          var Coluna8 = document.createElement("td");
+          Coluna8.textContent = r[7];
+          var Coluna9 = document.createElement("td");
+          Coluna9.textContent = r[8];
+    
+          var Linha = document.createElement("tr");
+    
+          Linha.appendChild(Coluna1);
+          Linha.appendChild(Coluna2);
+          Linha.appendChild(Coluna3);
+          Linha.appendChild(Coluna4);
+          Linha.appendChild(Coluna5);
+          Linha.appendChild(Coluna6);
+          Linha.appendChild(Coluna7);
+          Linha.appendChild(Coluna8);
+          Linha.appendChild(Coluna9);
+    
+          CorpoTabela.appendChild(Linha); 
+    
+        });
+    
+        AbrirCadastro();
+        
+      }
+    
+    }
+    
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+    
+    function Limpar(){
+    
+      CampoData1.value = "";
+      CampoData2.value = "";
+      CampoCliente.value = "";
+      CampoCnpj.value = "";
+      CampoContato.value = "";
+      CampoEstado.value = "";
+    
+      var Opt = "Escolha uma Cidade";
+      var Vazio = "NÃO";
+      LimparLista(CampoCidade,Opt,Vazio);
+    
+      var CorpoTabela = document.getElementById("CorpoTabela");
+    
+      while(CorpoTabela.hasChildNodes()){
+        CorpoTabela.removeChild(CorpoTabela.lastChild);
+      }
+    
+    }
+    
+    function sortTable(table, col, reverse) {
+       
+      if(col == 0 || col == 2 || col == 3){
+        return false;
+      }  
+    
+      var tb = table.tBodies[0],  
+        tr = Array.prototype.slice.call(tb.rows, 0),
+        i;  
+    
+      reverse = -((+reverse) || -1);
+    
+      tr = tr.sort(function(a, b) {
+       
+        return reverse * (a.cells[col].textContent.trim()
+          .localeCompare(b.cells[col].textContent.trim()) 
+        );   
+    
+      });
+    
+      for (i = 0; i < tr.length; ++i)  tb.appendChild(tr[i]);
+      
+    }
+    
+    function makeSortable(table) {
+    
+      var th = table.tHead,  
+        i;    
+    
+      th && (th = th.rows[0]) && (th = th.cells);
+    
+      if (th) i = th.length;
+    
+      else return;
+    
+      while (--i >= 0)(function(i) {
+        var dir = 1;
+        th[i].addEventListener('click', function() {
+          sortTable(table, i, (dir = 1 - dir))
+        });
+      }(i));
+      
+    }
+    
+    function makeAllSortable(parent) {
+      
+      parent = parent || document.body;
+      var t = parent.getElementsByTagName('table'),
+        i = t.length;     
+    
+      while (--i >= 0) makeSortable(t[i]);
+    }
+    
+    
+    $(document).ready(function(){
+    
+      $("#btnExcel").click(function(e){
+    
+        e.preventDefault();
+    
+        var DivTabela = document.getElementById("divTabela");
+    
+        var Arquivo = new Blob(["\ufeff" + DivTabela.outerHTML],{type:"application/vnd.ms-excel"});
+    
+        var url = window.URL.createObjectURL(Arquivo);
+    
+        var a = document.createElement("a");
+    
+        a.href = url;
+    
+        a.download = "Dados Filtro Cliente";
+    
+        a.click();
+    
+      });
+    
+    });
+    
+    
+    document.getElementById("btnPdf").addEventListener("click", GerarPdf);
+    
+    function GerarPdf(){
+    
+      var DivTabela = document.getElementById("divTabela").innerHTML;
+    
+      var style = "<style>";
+      style = style + "table {width: 100%; font: 12px Calibri;}";
+      style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;}";
+      style = style + "padding: 2px 3px; text-align: left;";
+      style = style + "</style>";   
+    
+      var win = window.open("","","height=700,width=900");
+    
+      win.document.write("<html><head>");
+      win.document.write("<title>FILTRO CLIENTES</title>");
+      win.document.write(style);
+      win.document.write("</head>");
+    
+      win.document.write("<body>");
+      win.document.write(DivTabela);
+      win.document.write("</body></html>");
+    
+      win.document.close();
+    
+      win.print();
+    
+    }
+    
+    function AbrirCadastro() {
+    
+      var linhasTabela = document.querySelectorAll("#Tab tr");
+      
+      linhasTabela.forEach(function(linha) {
+    
+          linha.addEventListener("dblclick", function() {
+          
+          this.classList.toggle("selecionada");
+    
+          var Cliente = this.cells[1].textContent;      
+    
+          if(Cliente != "_" && Cliente != "CLIENTE"){
+            google.script.run.withSuccessHandler().FormCliente(Cliente);
+          }
+          
+        });
+      });
+    }
+    
+    window.onload = function(){
+    
+      makeAllSortable();  
+    
+      var Cliente = CampoCliente.value;
+    
+      if(Cliente != ""){
+    
+        for(var i = 1; i < CampoCliente.length; i++){
+    
+          if(CampoCliente.options[i].value == Cliente){
+             CampoCliente.options[i].selected = true;
+          }
+    
+        }
+    
+      }
+    
+      var Estado = CampoEstado.value;
+    
+      if(Estado != ""){
+    
+        for(var i = 1; i < CampoEstado.length; i++){
+    
+          if(CampoEstado.options[i].value == Estado){
+             CampoEstado.options[i].selected = true;
+          }
+    
+        }
+    
+      }
+    
+      var Cidade = CampoCidade.value;
+    
+      Cidades();
+    
+      setTimeout(function(){
+    
+        if(Cidade != ""){
+    
+        for(var i = 1; i < CampoCidade.length; i++){
+    
+          if(CampoCidade.options[i].value == Cidade){
+             CampoCidade.options[i].selected = true;
+          }
+    
+         }
+    
+       }
+    
+      },3000);
+    
+    }
+    
+    </script>
+    
